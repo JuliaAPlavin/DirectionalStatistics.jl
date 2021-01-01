@@ -1,5 +1,5 @@
 using Test
-using Statistics: median, std
+using Statistics: mean, median, std, var
 using StatsBase: mad
 using IntervalSets
 using DirectionalStatistics
@@ -60,7 +60,7 @@ end
     @test geometric_mad(vals_r .* exp(im * rand())) ≈ mad(vals_r, normalize=false)
 
     vals = rand(5) .+ im .* rand(5)
-    @test_broken geometric_mad(vals .* exp(im * rand())) ≈ geometric_mad(vals)
+    @test_broken geometric_mad(vals .* exp(im * 1.2345)) ≈ geometric_mad(vals)
 end
 
 @testset "angle range shift" begin
@@ -72,6 +72,11 @@ end
         @test CircularStats.to_range(x + 2pi, -pi..pi) ≈ x
         @test CircularStats.to_range(x - 2pi, -pi..pi) ≈ x
     end
+
+    @test CircularStats.distance(0.5, 1.3) ≈ 0.8
+    @test CircularStats.distance(0.5, 4π + 1.3) ≈ 0.8
+    @test CircularStats.distance(0.5, 4π + 1.3, range=2π) ≈ 0.8
+    @test CircularStats.distance(0.5, 0.25, range=0.1) ≈ 0.05
 end
 
 @testset "angular mean" begin
@@ -90,6 +95,10 @@ end
     @test CircularStats.mean(vals) ≈ avg
     @test CircularStats.mean(vals ./ 2pi, 0..1) ≈ avg / 2pi
     @test CircularStats.mean(vals ./ 2pi * 1.5, -1.5..0) ≈ -1.5 + avg / 2pi * 1.5
+
+    vals = 1e-5 .* rand(5)
+    @test CircularStats.mean(vals) ≈ mean(vals)
+    @test CircularStats.mean(1.2345 .+ vals) ≈ 1.2345 + mean(vals)
 end
 
 @testset "angular spread" begin
@@ -101,12 +110,18 @@ end
     @test CircularStats.resultant_mean_length(fill(123, 10)) |> abs ≈ 1
     
     vals = [1.80044838, 2.02938314, 1.03534016, 4.84225057, 1.54256458, 5.19290675, 2.18474784, 4.77054777, 1.51736933, 0.72727580]
-    std = 1.46571716843
-    var = 0.65841659857
+    vals_std = 1.46571716843
+    vals_var = 0.65841659857
+    @test CircularStats.std(vals) ≈ vals_std
+    @test CircularStats.std(vals ./ 2pi, 0..1) ≈ vals_std / 2pi
+    @test CircularStats.std(vals ./ 2pi * 1.5, -1.5..0) ≈ vals_std / 2pi * 1.5
+    @test CircularStats.var(vals) ≈ vals_var
 
-    @test CircularStats.std(vals) ≈ std
-    @test CircularStats.std(vals ./ 2pi, 0..1) ≈ std / 2pi
-    @test CircularStats.std(vals ./ 2pi * 1.5, -1.5..0) ≈ std / 2pi * 1.5
-
-    @test CircularStats.var(vals) ≈ var
+    vals = 1e-3 .* rand(5)
+    @test 0.7*std(vals) < CircularStats.std(vals) < std(vals)
+    @test 0.7*std(vals) < CircularStats.std(1.2345 .+ vals) < std(vals)
+    @test 0.7*var(vals)/2 < CircularStats.var(vals) < var(vals)/2
+    @test 0.7*var(vals)/2 < CircularStats.var(1.2345 .+ vals) < var(vals)/2
+    @test CircularStats.std(2.5 .* vals) ≈ 2.5 * CircularStats.std(vals)  rtol=1e-3
+    @test CircularStats.var(2.5 .* vals) ≈ 2.5^2 * CircularStats.var(vals)  rtol=1e-3
 end

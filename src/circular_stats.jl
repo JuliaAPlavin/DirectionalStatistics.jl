@@ -8,9 +8,11 @@ function center_angle(x; at = 0, range = 2π)
     return mod(x - low, range) + low
 end
 
-shift_range(x, (from, to)) = (x - from.left) / width(from) * width(to) + to.left
-
 to_range(x, rng::Interval) = mod(x - rng.left, width(rng)) + rng.left
+
+distance(x, y; range=2π) = abs(center_angle(x - y; range=range))
+
+shift_range(x, (from, to)) = (x - from.left) / width(from) * width(to) + to.left
 
 
 resultant_vector(x) = sum(exp.(im .* x))
@@ -23,7 +25,6 @@ mean(x) = angle(resultant_vector(x))
 mean(x, rng::Interval) = shift_range(mean(shift_range.(x, rng => -π..π)), -π..π => rng)
 
 var(x) = 1 - resultant_mean_length(x)
-# var(x, rng::Interval) = 1 - resultant_length(x, rng)
 
 std(x) = √(max(0, -2 * log(resultant_mean_length(x))))
 std(x, rng::Interval) = std(shift_range.(x, rng => -π..π)) * width(rng) / 2π
