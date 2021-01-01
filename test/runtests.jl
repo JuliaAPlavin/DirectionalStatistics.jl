@@ -1,5 +1,6 @@
 using Test
 using Statistics: median, std
+using StatsBase: mad
 using IntervalSets
 using DirectionalStatistics
 using StaticArrays
@@ -43,6 +44,23 @@ end
         @test func([0, 1, 1+1im, 0.9+0.8im]) ≈ 0.9+0.8im rtol=1e-5
         @test func([SVector(0, 0), SVector(1, 0), SVector(0, 1), SVector(1, 1)]) == SVector(0.5, 0.5)
     end
+end
+
+@testset "geometric mad" begin
+    n = 1000
+    vals = randn(n) .+ im .* randn(n)
+    @test 0.85 < geometric_mad(vals) < 1.05
+    vals = [vals; 1e50]
+    @test 0.85 < geometric_mad(vals) < 1.05
+
+    vals_r = rand(5)  # has to be odd for unique median
+    @test geometric_mad(vals_r .+ 0im) ≈ mad(vals_r, normalize=false)
+    @test geometric_mad(vals_r .* im) ≈ mad(vals_r, normalize=false)
+    @test geometric_mad(vals_r .* exp(im * π/4)) ≈ mad(vals_r, normalize=false)
+    @test geometric_mad(vals_r .* exp(im * rand())) ≈ mad(vals_r, normalize=false)
+
+    vals = rand(5) .+ im .* rand(5)
+    @test_broken geometric_mad(vals .* exp(im * rand())) ≈ geometric_mad(vals)
 end
 
 @testset "angle range shift" begin
