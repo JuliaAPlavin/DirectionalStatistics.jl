@@ -2,6 +2,8 @@ using Test
 using Statistics: median
 using IntervalSets
 using DirectionalStatistics
+using StaticArrays
+
 
 @testset "geometric median" begin
     for func in [
@@ -20,6 +22,7 @@ using DirectionalStatistics
         end
         @test func([0, 1, 1im, 1+1im]) ≈ 0.5+0.5im rtol=1e-5
         @test func([0, 1, 1+1im, 0.9+0.8im]) ≈ 0.9+0.8im rtol=1e-5
+        @test func([SVector(0, 0), SVector(1, 0), SVector(0, 1), SVector(1, 1)]) == SVector(0.5, 0.5)
     end
 end
 

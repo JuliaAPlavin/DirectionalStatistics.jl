@@ -19,7 +19,7 @@ function geometric_median(::GeometricMedianAlgo.Weiszfeld, A::AbstractVector; ma
     current_value = mean(A)
 
     for i in 1:maxiter
-        distances = abs.(A .- current_value)
+        distances = norm.(A .- Ref(current_value))
         replace!(distances, 0 => 1)  # avoid infinite weights
         next_value = wmean(A, weights(1 ./ distances))
         movement = norm(next_value - current_value)
@@ -36,7 +36,7 @@ function geometric_median(::GeometricMedianAlgo.VardiZhang, A::AbstractVector; m
     current_value = mean(A)
 
     for i in 1:maxiter
-        distances = abs.(A .- current_value)
+        distances = norm.(A .- Ref(current_value))
         nonzero_mask = distances .!= 0
         distances = distances[nonzero_mask]
         
