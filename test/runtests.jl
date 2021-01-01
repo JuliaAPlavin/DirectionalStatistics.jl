@@ -4,6 +4,16 @@ using IntervalSets
 using DirectionalStatistics
 using StaticArrays
 
+import Aqua
+import CompatHelperLocal
+@testset begin
+    CompatHelperLocal.@check()
+    Aqua.test_ambiguities(DirectionalStatistics, recursive=false)
+    Aqua.test_unbound_args(DirectionalStatistics)
+    Aqua.test_undefined_exports(DirectionalStatistics)
+    Aqua.test_stale_deps(DirectionalStatistics)
+end
+
 
 @testset "vec_std" begin
     a = rand(10)
