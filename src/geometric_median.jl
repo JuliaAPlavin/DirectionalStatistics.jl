@@ -1,4 +1,4 @@
-using Statistics: mean
+using Statistics: mean, median
 using StatsBase: weights
 using LinearAlgebra: norm
 
