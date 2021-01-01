@@ -76,12 +76,3 @@ function geometric_mad(A::AbstractVector{<:Complex}; kwargs...)
     return sqrt(sqmad)
 end
 export geometric_mad
-
-function medoid(A::AbstractVector{<:Complex})
-    sums_of_dists = [
-        sum(abs(a - b) for b in A)
-        for a in A
-    ]
-    return A[argmin(sums_of_dists)]
-end
-export medoid

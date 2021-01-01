@@ -1,7 +1,7 @@
 name = "DirectionalStatistics"
 uuid = "e814f24e-44b0-11e9-2fd5-aba2b6113d95"
 authors = ["Alexander Plavin <alexander@plav.in>"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 IntervalSets = "8197267c-284f-5f27-9208-e0e47529a953"
