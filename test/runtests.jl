@@ -29,6 +29,7 @@ end
             A -> geometric_median(GeometricMedianAlgo.Weiszfeld(), A),
             A -> geometric_median(GeometricMedianAlgo.VardiZhang(), A),
         ]
+        @test func([1, 2, 3]) ≈ 2
         @test func([1. + 3im]) ≈ 1 + 3im rtol=1e-5
         for ang in [0, pi, pi/2, 0.1234]
             # collinear - needs to have odd number of elements for uniqueness

@@ -13,7 +13,7 @@ export GeometricMedianAlgo
 wsum(A, W) = mapreduce(*, +, A, W)
 wmean(A, W) = wsum(A, W) / sum(W)
 
-
+# Weiszfeld's algorithm as described on Wikipedia: https://en.wikipedia.org/wiki/Geometric_median
 function geometric_median(::GeometricMedianAlgo.Weiszfeld, A::AbstractVector; maxiter=1000, atol=1e-7)
     # initial guess: regular mean
     current_value = mean(A)
@@ -33,6 +33,7 @@ function geometric_median(::GeometricMedianAlgo.Weiszfeld, A::AbstractVector; ma
 end
 
 function geometric_median(::GeometricMedianAlgo.VardiZhang, A::AbstractVector; maxiter=1000, atol=1e-7)
+    # https://stackoverflow.com/a/30305181
     current_value = mean(A)
 
     for i in 1:maxiter
@@ -49,9 +50,10 @@ function geometric_median(::GeometricMedianAlgo.VardiZhang, A::AbstractVector; m
             wmean(A, ws)
         else
             next_value = wmean(A[nonzero_mask], ws)
-            movement_w = norm( (next_value - current_value) .* ws )
-            rinv = min(num_zeros / movement_w, 1)
-            wmean([next_value, current_value], weights([1 - rinv, rinv]))
+            movement_w = norm( (next_value - current_value) .* sum(ws) )
+            num_zeros = count(==(0), distances)
+            rinv = movement_w == 0 ? 0 : min(num_zeros / movement_w, 1)
+            next_value * (1 - rinv) + current_value * rinv
         end
 
         movement = norm(next_value - current_value)
@@ -64,7 +66,7 @@ function geometric_median(::GeometricMedianAlgo.VardiZhang, A::AbstractVector; m
     return current_value
 end
 
-geometric_median(A::AbstractVector; kwargs...) = geometric_median(GeometricMedianAlgo.Weiszfeld(), A; kwargs...)
+geometric_median(A::AbstractVector; kwargs...) = geometric_median(GeometricMedianAlgo.VardiZhang(), A; kwargs...)
 export geometric_median
 
 function geometric_mad(A::AbstractVector{<:Complex}; kwargs...)
