@@ -1,9 +1,17 @@
 using Test
-using Statistics: median
+using Statistics: median, std
 using IntervalSets
 using DirectionalStatistics
 using StaticArrays
 
+
+@testset "vec_std" begin
+    a = rand(10)
+    @test vec_std(a) ≈ std(a)
+    @test vec_std([[x] for x in a]) ≈ std(a)
+    a = rand(10) + im * rand(10)
+    @test vec_std(SVector.(real(a), imag(a))) ≈ std(a)
+end
 
 @testset "geometric median" begin
     for func in [
