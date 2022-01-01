@@ -6,24 +6,6 @@ using DirectionalStatistics
 using StaticArrays
 using Random
 
-import Aqua
-import CompatHelperLocal as CHL
-@testset begin
-    CHL.@check()
-    Aqua.test_ambiguities(DirectionalStatistics, recursive=false)
-    Aqua.test_unbound_args(DirectionalStatistics)
-    Aqua.test_undefined_exports(DirectionalStatistics)
-    Aqua.test_stale_deps(DirectionalStatistics)
-end
-
-
-using Documenter, DocumenterMarkdown
-DocMeta.setdocmeta!(DirectionalStatistics, :DocTestSetup, :(using DirectionalStatistics; using IntervalSets); recursive=true)
-makedocs(format=Markdown(), modules=[DirectionalStatistics], root="../docs")
-mv("../docs/build/README.md", "../README.md", force=true)
-rm("../docs/build", recursive=true)
-
-
 @testset "most distant points" begin
     x = [2, 39, 17, 7, -90, 45, 105, -30, 26, -4]
     @test Set(most_distant_points(x)) == Set([-90, 105])
@@ -169,3 +151,21 @@ end
     @test_throws exc_type CircularStats.var([])
     @test_throws exc_type CircularStats.median([])
 end
+
+
+import Aqua
+import CompatHelperLocal as CHL
+@testset begin
+    CHL.@check()
+    Aqua.test_ambiguities(DirectionalStatistics, recursive=false)
+    Aqua.test_unbound_args(DirectionalStatistics)
+    Aqua.test_undefined_exports(DirectionalStatistics)
+    Aqua.test_stale_deps(DirectionalStatistics)
+end
+
+
+using Documenter, DocumenterMarkdown
+DocMeta.setdocmeta!(DirectionalStatistics, :DocTestSetup, :(using DirectionalStatistics; using IntervalSets); recursive=true)
+makedocs(format=Markdown(), modules=[DirectionalStatistics], root="../docs")
+mv("../docs/build/README.md", "../README.md", force=true)
+rm("../docs/build", recursive=true)
