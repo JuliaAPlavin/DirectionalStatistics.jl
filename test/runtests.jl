@@ -159,8 +159,11 @@ end
 end
 
 @testset "errors" begin
-    @test_throws ArgumentError CircularStats.mean([])
-    @test_throws ArgumentError CircularStats.std([])
-    @test_throws ArgumentError CircularStats.var([])
-    @test_throws ArgumentError CircularStats.median([])
+    # MethodError on julia 1.8+, ArgumentError on earlier versions
+    # https://github.com/JuliaLang/julia/pull/41885
+    exc_type = Union{ArgumentError, MethodError}
+    @test_throws exc_type CircularStats.mean([])
+    @test_throws exc_type CircularStats.std([])
+    @test_throws exc_type CircularStats.var([])
+    @test_throws exc_type CircularStats.median([])
 end
