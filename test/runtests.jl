@@ -4,6 +4,7 @@ using StatsBase: mad
 using IntervalSets
 using DirectionalStatistics
 using StaticArrays
+using Random
 
 import Aqua
 import CompatHelperLocal as CHL
@@ -80,6 +81,7 @@ end
     @test geometric_mad(vals_r .* exp(im * π/4)) ≈ mad(vals_r, normalize=false)
     @test geometric_mad(vals_r .* exp(im * rand())) ≈ mad(vals_r, normalize=false)
 
+    Random.seed!(123)
     vals = rand(5) .+ im .* rand(5)
     @test_broken geometric_mad(vals .* exp(im * 1.2345)) ≈ geometric_mad(vals)
 end
