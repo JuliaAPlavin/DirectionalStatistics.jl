@@ -104,6 +104,16 @@ end
     vals = 1e-5 .* rand(5)
     @test CircularStats.mean(vals) ≈ mean(vals)
     @test CircularStats.mean(1.2345 .+ vals) ≈ 1.2345 + mean(vals)
+    
+    # from scipy
+    @test Circular.mean([355, 5, 2, 359, 10, 350], 0..360) ≈ 0.167690146
+    @test Circular.mean([20, 21, 22, 18, 19, 20.5, 19.2], 0..360) ≈ mean([20, 21, 22, 18, 19, 20.5, 19.2])  rtol=1e-5
+    @test Circular.mean([20, 21, 22, 18, 19, 20.5, NaN], 0..360) |> isnan
+    
+    @testset for (f, fc) in [(mean, Circular.mean), (std, Circular.std), (var, Circular.var)]
+        x = [repeat([0.12675364631578953], 10); repeat([0.12675365920187928], 100)]
+        @test f(x) ≈ fc(x)  atol=1e-8
+    end
 end
 
 @testset "angular median" begin
@@ -140,6 +150,14 @@ end
     @test 0.7*var(vals)/2 < CircularStats.var(1.2345 .+ vals) < var(vals)/2
     @test CircularStats.std(2.5 .* vals) ≈ 2.5 * CircularStats.std(vals)  rtol=1e-3
     @test CircularStats.var(2.5 .* vals) ≈ 2.5^2 * CircularStats.var(vals)  rtol=1e-3
+    
+    # from scipy
+    @test Circular.std([355, 5, 2, 359, 10, 350], 0..360) ≈  6.520702116
+    @test_broken Circular.var([355, 5, 2, 359, 10, 350], 0..360) ≈ 42.51955609
+    @test_broken Circular.std([20, 21, 22, 18, 19, 20.5, 19.2], 0..360) ≈ std([20, 21, 22, 18, 19, 20.5, 19.2])  rtol=1e-4
+    @test_broken Circular.var([20, 21, 22, 18, 19, 20.5, 19.2], 0..360) ≈ var([20, 21, 22, 18, 19, 20.5, 19.2])  rtol=1e-4
+    @test Circular.std([20, 21, 22, 18, 19, 20.5, NaN], 0..360) |> isnan
+    @test Circular.var([20, 21, 22, 18, 19, 20.5, NaN]) |> isnan
 end
 
 @testset "errors" begin
