@@ -6,14 +6,21 @@ using DirectionalStatistics
 using StaticArrays
 
 import Aqua
-import CompatHelperLocal
+import CompatHelperLocal as CHL
 @testset begin
-    CompatHelperLocal.@check()
+    CHL.@check()
     Aqua.test_ambiguities(DirectionalStatistics, recursive=false)
     Aqua.test_unbound_args(DirectionalStatistics)
     Aqua.test_undefined_exports(DirectionalStatistics)
     Aqua.test_stale_deps(DirectionalStatistics)
 end
+
+
+using Documenter, DocumenterMarkdown
+DocMeta.setdocmeta!(DirectionalStatistics, :DocTestSetup, :(using DirectionalStatistics; using IntervalSets); recursive=true)
+makedocs(format=Markdown(), modules=[DirectionalStatistics], root="../docs")
+mv("../docs/build/README.md", "../README.md", force=true)
+rm("../docs/build", recursive=true)
 
 
 @testset "most distant points" begin
@@ -115,6 +122,17 @@ end
     @test CircularStats.mean(1.2345 .+ vals) ≈ 1.2345 + mean(vals)
 end
 
+@testset "angular median" begin
+    @test CircularStats.median([0]) == 0
+    @test CircularStats.median([0, 0, 0]) == 0
+    @test CircularStats.median([-9π/16, -9π/16, 0, 9π/16, 9π/16]) == 0
+    @test CircularStats.median([-3π/8, 0, 2π/3]) == 0
+    @test CircularStats.median([ 1.39079274, 0.17122657, -0.61367729, -2.56454636, 2.70582513]) == 1.39079274
+    @test CircularStats.median([0, 1, 1, 2, 2, 3]) ∈ [1, 2]
+    x = [1, 1.2, 2, 2.2, 1+π, 1.2+π, 2+π, 2.2+π]
+    @test CircularStats.median(x) ∈ x
+end
+
 @testset "angular spread" begin
     @test CircularStats.std(zeros(10)) ≈ 0
     @test CircularStats.std(fill(123, 10)) ≈ 0
@@ -138,4 +156,11 @@ end
     @test 0.7*var(vals)/2 < CircularStats.var(1.2345 .+ vals) < var(vals)/2
     @test CircularStats.std(2.5 .* vals) ≈ 2.5 * CircularStats.std(vals)  rtol=1e-3
     @test CircularStats.var(2.5 .* vals) ≈ 2.5^2 * CircularStats.var(vals)  rtol=1e-3
+end
+
+@testset "errors" begin
+    @test_throws ArgumentError CircularStats.mean([])
+    @test_throws ArgumentError CircularStats.std([])
+    @test_throws ArgumentError CircularStats.var([])
+    @test_throws ArgumentError CircularStats.median([])
 end
