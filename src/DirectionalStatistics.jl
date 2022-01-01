@@ -3,7 +3,7 @@ module DirectionalStatistics
 include("circular_stats.jl")
 include("geometric_median.jl")
 
-const Circular = CircularStats
+const CircularStats = Circular
 export CircularStats, Circular
 
 

@@ -9,14 +9,42 @@
 Directional statistics package for Julia. Currently includes several circular and spatial descriptive statistics, see reference below for details.
 
 
+<a id='Usage'></a>
+
+<a id='Usage-1'></a>
+
+# Usage
+
+
+Package contains submodules, and many functions are indended to be qualified on call. This lets us use names such as `mean()` and still have no conflicts with functions in `Statistics` or `StatsBase`.
+
+
+```
+using DirectionalStatistics
+
+Circular.mean(...)
+```
+
+
+All circular statistics operate in a 2π range by default, that corresponds to the natural range of angles. Arbitrary ranges are supported and can be specified as an interval:
+
+
+```
+using IntervalSets
+
+Circular.mean(array, 0..π)
+Circular.mean(array, -180..+180)
+```
+
+
 <a id='Reference'></a>
 
 <a id='Reference-1'></a>
 
 # Reference
 
-<a id='DirectionalStatistics.CircularStats.center_angle-Tuple{Any}' href='#DirectionalStatistics.CircularStats.center_angle-Tuple{Any}'>#</a>
-**`DirectionalStatistics.CircularStats.center_angle`** &mdash; *Method*.
+<a id='DirectionalStatistics.Circular.center_angle-Tuple{Any}' href='#DirectionalStatistics.Circular.center_angle-Tuple{Any}'>#</a>
+**`DirectionalStatistics.Circular.center_angle`** &mdash; *Method*.
 
 
 
@@ -37,10 +65,10 @@ julia> Circular.center_angle(10, at=0, range=3)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/07d694c83141c9db245a2efb9376ec821d5fd388/src/circular_stats.jl#L7-L23' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/e645bc01a84ef6db433927f78cf53a24f50fb86b/src/circular_stats.jl#L7-L23' class='documenter-source'>source</a><br>
 
-<a id='DirectionalStatistics.CircularStats.distance-Tuple{Any, Any}' href='#DirectionalStatistics.CircularStats.distance-Tuple{Any, Any}'>#</a>
-**`DirectionalStatistics.CircularStats.distance`** &mdash; *Method*.
+<a id='DirectionalStatistics.Circular.distance-Tuple{Any, Any}' href='#DirectionalStatistics.Circular.distance-Tuple{Any, Any}'>#</a>
+**`DirectionalStatistics.Circular.distance`** &mdash; *Method*.
 
 
 
@@ -58,10 +86,10 @@ julia> Circular.distance(0, 5.5, range=3)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/07d694c83141c9db245a2efb9376ec821d5fd388/src/circular_stats.jl#L40-L53' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/e645bc01a84ef6db433927f78cf53a24f50fb86b/src/circular_stats.jl#L40-L53' class='documenter-source'>source</a><br>
 
-<a id='DirectionalStatistics.CircularStats.mad-Tuple{Any}' href='#DirectionalStatistics.CircularStats.mad-Tuple{Any}'>#</a>
-**`DirectionalStatistics.CircularStats.mad`** &mdash; *Method*.
+<a id='DirectionalStatistics.Circular.mad-Tuple{Any}' href='#DirectionalStatistics.Circular.mad-Tuple{Any}'>#</a>
+**`DirectionalStatistics.Circular.mad`** &mdash; *Method*.
 
 
 
@@ -82,10 +110,10 @@ true
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/07d694c83141c9db245a2efb9376ec821d5fd388/src/circular_stats.jl#L153-L169' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/e645bc01a84ef6db433927f78cf53a24f50fb86b/src/circular_stats.jl#L153-L169' class='documenter-source'>source</a><br>
 
-<a id='DirectionalStatistics.CircularStats.mean-Tuple{Any}' href='#DirectionalStatistics.CircularStats.mean-Tuple{Any}'>#</a>
-**`DirectionalStatistics.CircularStats.mean`** &mdash; *Method*.
+<a id='DirectionalStatistics.Circular.mean-Tuple{Any}' href='#DirectionalStatistics.Circular.mean-Tuple{Any}'>#</a>
+**`DirectionalStatistics.Circular.mean`** &mdash; *Method*.
 
 
 
@@ -103,10 +131,10 @@ true
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/07d694c83141c9db245a2efb9376ec821d5fd388/src/circular_stats.jl#L63-L76' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/e645bc01a84ef6db433927f78cf53a24f50fb86b/src/circular_stats.jl#L63-L76' class='documenter-source'>source</a><br>
 
-<a id='DirectionalStatistics.CircularStats.median-Tuple{Any}' href='#DirectionalStatistics.CircularStats.median-Tuple{Any}'>#</a>
-**`DirectionalStatistics.CircularStats.median`** &mdash; *Method*.
+<a id='DirectionalStatistics.Circular.median-Tuple{Any}' href='#DirectionalStatistics.Circular.median-Tuple{Any}'>#</a>
+**`DirectionalStatistics.Circular.median`** &mdash; *Method*.
 
 
 
@@ -128,10 +156,10 @@ julia> Circular.median([0, 1, 2], -2..4)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/07d694c83141c9db245a2efb9376ec821d5fd388/src/circular_stats.jl#L102-L119' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/e645bc01a84ef6db433927f78cf53a24f50fb86b/src/circular_stats.jl#L102-L119' class='documenter-source'>source</a><br>
 
-<a id='DirectionalStatistics.CircularStats.sample_range-Tuple{Any}' href='#DirectionalStatistics.CircularStats.sample_range-Tuple{Any}'>#</a>
-**`DirectionalStatistics.CircularStats.sample_range`** &mdash; *Method*.
+<a id='DirectionalStatistics.Circular.sample_range-Tuple{Any}' href='#DirectionalStatistics.Circular.sample_range-Tuple{Any}'>#</a>
+**`DirectionalStatistics.Circular.sample_range`** &mdash; *Method*.
 
 
 
@@ -158,10 +186,10 @@ julia> Circular.sample_range([0, 1], 0..π)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/07d694c83141c9db245a2efb9376ec821d5fd388/src/circular_stats.jl#L122-L144' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/e645bc01a84ef6db433927f78cf53a24f50fb86b/src/circular_stats.jl#L122-L144' class='documenter-source'>source</a><br>
 
-<a id='DirectionalStatistics.CircularStats.std-Tuple{Any}' href='#DirectionalStatistics.CircularStats.std-Tuple{Any}'>#</a>
-**`DirectionalStatistics.CircularStats.std`** &mdash; *Method*.
+<a id='DirectionalStatistics.Circular.std-Tuple{Any}' href='#DirectionalStatistics.Circular.std-Tuple{Any}'>#</a>
+**`DirectionalStatistics.Circular.std`** &mdash; *Method*.
 
 
 
@@ -182,10 +210,10 @@ julia> Circular.std([0, 1, 2, 3], -10..10)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/07d694c83141c9db245a2efb9376ec821d5fd388/src/circular_stats.jl#L82-L98' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/e645bc01a84ef6db433927f78cf53a24f50fb86b/src/circular_stats.jl#L82-L98' class='documenter-source'>source</a><br>
 
-<a id='DirectionalStatistics.CircularStats.to_range-Tuple{Any, Interval}' href='#DirectionalStatistics.CircularStats.to_range-Tuple{Any, Interval}'>#</a>
-**`DirectionalStatistics.CircularStats.to_range`** &mdash; *Method*.
+<a id='DirectionalStatistics.Circular.to_range-Tuple{Any, Interval}' href='#DirectionalStatistics.Circular.to_range-Tuple{Any, Interval}'>#</a>
+**`DirectionalStatistics.Circular.to_range`** &mdash; *Method*.
 
 
 
@@ -203,15 +231,15 @@ julia> Circular.to_range(5.5, -1..1)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/07d694c83141c9db245a2efb9376ec821d5fd388/src/circular_stats.jl#L25-L38' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/e645bc01a84ef6db433927f78cf53a24f50fb86b/src/circular_stats.jl#L25-L38' class='documenter-source'>source</a><br>
 
-<a id='DirectionalStatistics.CircularStats.var-Tuple{Any}' href='#DirectionalStatistics.CircularStats.var-Tuple{Any}'>#</a>
-**`DirectionalStatistics.CircularStats.var`** &mdash; *Method*.
+<a id='DirectionalStatistics.Circular.var-Tuple{Any}' href='#DirectionalStatistics.Circular.var-Tuple{Any}'>#</a>
+**`DirectionalStatistics.Circular.var`** &mdash; *Method*.
 
 
 
 Variance of a collection of circular data. 
 
 
-<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/07d694c83141c9db245a2efb9376ec821d5fd388/src/circular_stats.jl#L79' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/CircularStats.jl/blob/e645bc01a84ef6db433927f78cf53a24f50fb86b/src/circular_stats.jl#L79' class='documenter-source'>source</a><br>
 

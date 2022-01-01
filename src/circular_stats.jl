@@ -1,4 +1,4 @@
-module CircularStats
+module Circular
 
 using IntervalSets
 import StatsBase
