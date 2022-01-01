@@ -22,6 +22,6 @@ Circular.mean(array, -180..+180)
 # Reference
 
 ```@autodocs
-Modules = [DirectionalStatistics.Circular]
+Modules = [DirectionalStatistics.Circular, DirectionalStatistics]
 Order   = [:function, :type]
 ```
