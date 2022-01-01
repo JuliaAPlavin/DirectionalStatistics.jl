@@ -53,9 +53,8 @@ end
 @testset "geometric mad" begin
     n = 1000
     vals = randn(n) .+ im .* randn(n)
-    @test 0.85 < geometric_mad(vals) < 1.05
-    vals = [vals; 1e50]
-    @test 0.85 < geometric_mad(vals) < 1.05
+    @test 1.1 < geometric_mad(vals) < 1.3
+    @test geometric_mad([vals; 1e50]) ≈ geometric_mad(vals)  rtol=1e-2
 
     vals_r = rand(5)  # has to be odd for unique median
     @test geometric_mad(vals_r .+ 0im) ≈ mad(vals_r, normalize=false)
@@ -63,9 +62,10 @@ end
     @test geometric_mad(vals_r .* exp(im * π/4)) ≈ mad(vals_r, normalize=false)
     @test geometric_mad(vals_r .* exp(im * rand())) ≈ mad(vals_r, normalize=false)
 
-    Random.seed!(123)
-    vals = rand(5) .+ im .* rand(5)
-    @test_broken geometric_mad(vals .* exp(im * 1.2345)) ≈ geometric_mad(vals)
+    @testset for i in 1:10
+        vals = rand(5) .+ im .* rand(5)
+        @test geometric_mad(vals .* exp(im * 10 * rand())) ≈ geometric_mad(vals)  rtol=0.3
+    end
 end
 
 @testset "angle range shift" begin

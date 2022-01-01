@@ -86,13 +86,10 @@ export geometric_median
 
 """ Geometric Median absolute deviation (MAD) of a collection of points.
 
-See [https://en.wikipedia.org/wiki/Median_absolute_deviation#Geometric_median_absolute_deviation].
+Follows the same definition as the univariate MAD, with geometric median instead of the regular median. Rotation invariant, unlike [https://en.wikipedia.org/wiki/Median_absolute_deviation#Geometric_median_absolute_deviation].
 """
 function geometric_mad(A::AbstractVector{<:Complex}; kwargs...)
     med = geometric_median(A; kwargs...)
-    sqmad = sum((real, imag)) do func
-        median(abs.(func.(A) .- func(med)))^2
-    end
-    return sqrt(sqmad)
+    return median(norm.(A .- med))
 end
 export geometric_mad
