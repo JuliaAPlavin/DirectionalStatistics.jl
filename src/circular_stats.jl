@@ -15,29 +15,25 @@ distance(x, y; range=2π) = abs(center_angle(x - y; range=range))
 shift_range(x, (from, to)) = (x - from.left) / width(from) * width(to) + to.left
 
 
-resultant_vector(x) = sum(exp.(im .* x))
-resultant_mean_vector(x) = Statistics.mean(exp.(im .* x))
+resultant_vector(x) = sum(cis, x)
+resultant_mean_vector(x) = resultant_vector(x) / length(x)
 resultant_length(x) = abs(resultant_vector(x))
 resultant_mean_length(x) = abs(resultant_mean_vector(x))
 
 
 mean(x) = angle(resultant_vector(x))
-mean(x, rng::Interval) = shift_range(mean(shift_range.(x, rng => -π..π)), -π..π => rng)
+mean(x, rng::Interval) = shift_range(mean(Iterators.map(x -> shift_range.(x, rng => -π..π), x)), -π..π => rng)
 
 var(x) = 1 - resultant_mean_length(x)
 
 std(x) = √(max(0, -2 * log(resultant_mean_length(x))))
-std(x, rng::Interval) = std(shift_range.(x, rng => -π..π)) * width(rng) / 2π
+std(x, rng::Interval) = std(Iterators.map(x -> shift_range.(x, rng => -π..π), x)) * width(rng) / 2π
 
 
 function median(x::AbstractVector)
     # XXX: actually, medoid
     if length(x) == 0 return nothing end
-    sums_of_dists = [
-        sum(abs(to_range(a - b, -π..π))
-            for b in x)
-        for a in x]
-    return x[argmin(sums_of_dists)]
+    return minimum(a -> (sum(b -> distance(a, b), x), a), x)[2]
 end
 
 end

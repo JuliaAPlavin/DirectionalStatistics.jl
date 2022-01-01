@@ -120,8 +120,8 @@ end
     @test CircularStats.std(fill(123, 10)) ≈ 0
     @test CircularStats.var(zeros(10)) ≈ 0
     @test CircularStats.var(fill(123, 10)) ≈ 0
-    @test CircularStats.resultant_mean_length(zeros(10)) |> abs ≈ 1
-    @test CircularStats.resultant_mean_length(fill(123, 10)) |> abs ≈ 1
+    @test CircularStats.resultant_mean_length(zeros(10)) ≈ 1
+    @test CircularStats.resultant_mean_length(fill(123, 10)) ≈ 1
     
     vals = [1.80044838, 2.02938314, 1.03534016, 4.84225057, 1.54256458, 5.19290675, 2.18474784, 4.77054777, 1.51736933, 0.72727580]
     vals_std = 1.46571716843
