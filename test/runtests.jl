@@ -16,6 +16,20 @@ import CompatHelperLocal
 end
 
 
+@testset "most distant points" begin
+    x = [2, 39, 17, 7, -90, 45, 105, -30, 26, -4]
+    @test Set(most_distant_points(x)) == Set([-90, 105])
+    @test Set(most_distant_points_ix(x)) == Set([5, 7])
+
+    x = [82, 10, 82, -111, -13, -63, 83, 5, 10, 3] .+ im .* [2, 39, 17, 7, -90, 45, 105, -30, 26, -4]
+    @test Set(most_distant_points(x)) == Set([83 + 105im, -13 - 90im])
+    @test Set(most_distant_points_ix(x)) == Set([5, 7])
+
+    x = SVector.(real(x), imag(x))
+    @test Set(most_distant_points(x)) == Set([[83, 105], [-13, -90]])
+    @test Set(most_distant_points_ix(x)) == Set([5, 7])
+end
+
 @testset "vec_std" begin
     a = rand(10)
     @test vec_std(a) ≈ std(a)
