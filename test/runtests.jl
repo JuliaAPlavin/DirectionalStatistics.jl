@@ -204,13 +204,8 @@ end
 
 import Aqua
 import CompatHelperLocal as CHL
-@testset begin
-    CHL.@check()
-    Aqua.test_ambiguities(DirectionalStatistics, recursive=false)
-    Aqua.test_unbound_args(DirectionalStatistics)
-    Aqua.test_undefined_exports(DirectionalStatistics)
-    Aqua.test_stale_deps(DirectionalStatistics)
-end
+CHL.@check()
+Aqua.test_all(DirectionalStatistics; ambiguities=false)
 
 
 using Documenter, DocumenterMarkdown
