@@ -2,7 +2,7 @@ module Circular
 
 using IntervalSets
 import StatsBase
-using AccessorsExtra
+using Accessors
 using InverseFunctions
 import ..shift_range
 
@@ -167,7 +167,8 @@ sample_range(x, rng::Interval) = sample_range(shift_range.(x, rng => -π..π)) *
 function sample_interval(x, rng::Interval)
     sr = @optic shift_range(_, rng => -π..π)
     int = sample_interval(map(sr, x))
-    return @modify(inverse(sr), endpoints(int) |> Elements())
+    # @modify(inverse(sr), endpoints(int) |> Elements()):
+    return setproperties(int, map(inverse(sr), Accessors.getproperties(int)))
 end
 
 
