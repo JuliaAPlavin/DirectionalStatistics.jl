@@ -76,7 +76,7 @@ true
 """
 mean(x) = angle(resultant_vector(x))
 function mean(x, rng::Interval)
-    sr = Base.Fix2(shift_range, rng => -π..π)
+    sr = @optic shift_range(_, rng => -π..π)
     inverse(sr)(mean(Iterators.map(sr, x)))
 end
 
@@ -122,7 +122,7 @@ julia> Circular.median([0, 1, 2], -2..4)
 """
 median(x) = argmin(a -> sum(b -> distance(a, b), x), x)
 function median(x, rng::Interval)
-    sr = Base.Fix2(shift_range, rng => -π..π)
+    sr = @optic shift_range(_, rng => -π..π)
     inverse(sr)(median(Iterators.map(sr, x)))
 end
 
