@@ -180,14 +180,13 @@ julia> wrap_curve_closed(identity, [-20., 0, 100, 200]; rng=-180..180)
 ```
 """
 function wrap_curve_closed(f, data; rng)
-    @assert issorted(data, by=f)
 	wrap_ix = findall(map(@views zip(data[begin:end-1], data[begin+1:end])) do (a, b)
         da = floor(Int, (f(a) - minimum(rng)) / width(rng))
         db = floor(Int, (f(b) - minimum(rng)) / width(rng))
-        @assert db <= da + 1
-		db > da
+        @assert db in (da, da + 1)
+		db > da || db == da && f(b) < f(a)
 	end)
-    isempty(wrap_ix) && return data
+    wrap_ix = isempty(wrap_ix) ? [lastindex(data)] : wrap_ix
 
 	ix = only(wrap_ix)
 	obj = data[ix]
