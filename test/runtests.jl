@@ -234,10 +234,3 @@ import Aqua
 import CompatHelperLocal as CHL
 CHL.@check()
 Aqua.test_all(DirectionalStatistics; ambiguities=false)
-
-
-# using Documenter, DocumenterMarkdown
-# DocMeta.setdocmeta!(DirectionalStatistics, :DocTestSetup, :(using DirectionalStatistics; using IntervalSets); recursive=true)
-# makedocs(format=Markdown(), modules=[DirectionalStatistics], root="../docs")
-# mv("../docs/build/README.md", "../README.md", force=true)
-# rm("../docs/build", recursive=true)
