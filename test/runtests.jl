@@ -31,24 +31,24 @@ end
 end
 
 @testset "geometric median" begin
-    @testset for func in [
+    @testset for geomed in [
             geometric_median,
             A -> geometric_median(GeometricMedianAlgo.Weiszfeld(), A),
             A -> geometric_median(GeometricMedianAlgo.VardiZhang(), A),
         ]
-        @test func([1, 2, 3]) ≈ 2
-        @test func([1. + 3im]) ≈ 1 + 3im rtol=1e-5
+        @test geomed([1, 2, 3]) ≈ 2
+        @test geomed([1. + 3im]) ≈ 1 + 3im rtol=1e-5
         @testset for ang in [0, pi, pi/2, 0.1234]
             # collinear - needs to have odd number of elements for uniqueness
             vals = [-3, 0, 0, 1, 2, 5, 10]
-            @test func(vals .* exp(im * ang)) ≈ median(vals) * exp(im * ang) rtol=1e-5
+            @test geomed(vals .* exp(im * ang)) ≈ median(vals) * exp(im * ang) rtol=1e-5
             # or equal middle values
             vals = [-3, 0, 1, 2, 2, 5, 10]
-            @test func(vals .* exp(im * ang)) ≈ median(vals) * exp(im * ang) rtol=1e-5
+            @test geomed(vals .* exp(im * ang)) ≈ median(vals) * exp(im * ang) rtol=1e-5
         end
-        @test func([0, 1, 1im, 1+1im]) ≈ 0.5+0.5im rtol=1e-5
-        @test func([0, 1, 1+1im, 0.9+0.8im]) ≈ 0.9+0.8im rtol=1e-5
-        @test func([SVector(0, 0), SVector(1, 0), SVector(0, 1), SVector(1, 1)]) == SVector(0.5, 0.5)
+        @test geomed([0, 1, 1im, 1+1im]) ≈ 0.5+0.5im rtol=1e-5
+        @test geomed([0, 1, 1+1im, 0.9+0.8im]) ≈ 0.9+0.8im rtol=1e-5
+        @test geomed([SVector(0, 0), SVector(1, 0), SVector(0, 1), SVector(1, 1)]) == SVector(0.5, 0.5)
     end
 end
 
@@ -56,6 +56,7 @@ end
     n = 1000
     vals = randn(n) .+ im .* randn(n)
     @test 1.1 < geometric_mad(vals) < 1.3
+    @test geometric_mad(vals) ≈ complex(geometric_mad(SVector.(real.(vals), imag.(vals)))...)
     @test geometric_mad([vals; 1e50]) ≈ geometric_mad(vals)  rtol=1e-2
 
     vals_r = rand(5)  # has to be odd for unique median

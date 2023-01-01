@@ -84,9 +84,10 @@ geometric_median(A::AbstractVector; kwargs...) = geometric_median(GeometricMedia
 
 """ Geometric Median absolute deviation (MAD) of a collection of points.
 
-Follows the same definition as the univariate MAD, with geometric median instead of the regular median. Rotation invariant, unlike [https://en.wikipedia.org/wiki/Median_absolute_deviation#Geometric_median_absolute_deviation].
+Follows the same definition as the univariate MAD, with geometric median instead of the regular median.
+Rotation invariant, unlike [https://en.wikipedia.org/wiki/Median_absolute_deviation#Geometric_median_absolute_deviation].
 """
-function geometric_mad(A::AbstractVector{<:Complex}; kwargs...)
+function geometric_mad(A::AbstractVector; kwargs...)
     med = geometric_median(A; kwargs...)
-    return median(norm.(A .- med))
+    return median(norm.(A .- Ref(med)))
 end
