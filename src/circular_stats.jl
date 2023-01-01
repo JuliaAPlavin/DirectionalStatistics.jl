@@ -2,7 +2,7 @@ module Circular
 
 using IntervalSets
 import StatsBase
-using Accessors: set, modify
+using Accessors
 using InverseFunctions
 import ..shift_range
 
@@ -186,24 +186,35 @@ julia> wrap_curve_closed(identity, [-20., 0, 100, 200]; rng=-180..180)
 ```
 """
 function wrap_curve_closed(f, data; rng)
-    wrap_ix = findall(map(@views zip(data[begin:end-1], data[begin+1:end])) do (a, b)
-        da = floor(Int, (f(a) - minimum(rng)) / width(rng))
-        db = floor(Int, (f(b) - minimum(rng)) / width(rng))
-        @assert db in (da - 1, da, da + 1)
-        db > da || db == da && f(b) < f(a)
-    end)
-    wrap_ix = isempty(wrap_ix) ? [lastindex(data)] : wrap_ix
+    data = @modify(fx -> to_range(fx, rng), data |> Elements() |> f)
 
-    ix = only(wrap_ix)
-    obj = data[ix]
-    fval = f(obj)
-    obj1 = set(obj, f, maximum(rng) - √eps(fval))
-    obj2 = set(obj, f, maximum(rng) + √eps(fval))
-    map(@views [obj2; data[ix+1:end]; data[begin:ix]; obj1]) do x
-        modify(x, f) do fx
-            to_range(fx, rng)
-        end
+    is_wrap(a, b) = distance(f(a), f(b); range=width(rng)) < abs(f(a) - f(b)) * (1 - √eps(1.))
+    data = @modify(data |> _ConsecutivePairs() |> If(((a, b),) -> is_wrap(a, b))) do p
+        [
+            p[1],
+            modify(fx -> _nearest_endpoint(rng, fx; pad=√eps(1.)), p[1], f),
+            set(p[2], f, NaN),
+            modify(fx -> _nearest_endpoint(rng, fx; pad=√eps(1.)), p[2], f),
+            p[2],
+        ]
     end
+    ix = findfirst(x -> isnan(f(x)), data)
+    isnothing(ix) ? data : vcat(data[ix+1:end], data[begin:ix-1])
+end
+
+function _nearest_endpoint(int, x; pad)
+    ep = argmin(ep -> abs(ep - x), endpoints(int))
+    ep + sign(x - ep) * pad
+end
+
+struct _ConsecutivePairs end
+Accessors.OpticStyle(::Type{_ConsecutivePairs}) = Accessors.ModifyBased()
+
+function Accessors.modify(f, obj::AbstractVector, ::_ConsecutivePairs)
+    tups = [tuple.(obj[begin:end-1], obj[begin+1:end]); (obj[end], obj[begin])]
+    new_tups = map(f, tups)
+    @assert all(last.(new_tups[begin:end-1]) .== first.(new_tups[begin+1:end]))
+    reduce(vcat, map(t -> collect(t[1:end-1]), new_tups))
 end
 
 end

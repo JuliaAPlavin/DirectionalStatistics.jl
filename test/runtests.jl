@@ -183,12 +183,13 @@ end
 
 @testset "wrap_curve" begin
     @test Circular.wrap_curve_closed(identity, [-20., 0, 100, 200]; rng=-180..180) ≈ [-180, -160, -20, 0, 100, 180]
-    @test Circular.wrap_curve_closed(identity, [-200, -20., 0, 100]; rng=-180..180) ≈ [-180, -20, 0, 100, 160, 180]
-    @test Circular.wrap_curve_closed(identity, [500., 510, 600]; rng=-180..180) ≈ [-180, -120, 140, 150, 180]
+    @test Circular.wrap_curve_closed(identity, [-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
+    @test Circular.wrap_curve_closed(identity, 360*10 .+ [-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
     @test Circular.wrap_curve_closed(identity, [100., 150, 200, 340, 370]; rng=-180..180) ≈ [-180, -160, -20, 10, 100, 150, 180]
-    @test Circular.wrap_curve_closed(identity, [-20., 0, 100]; rng=-180..180) ≈ [-180, -20, 0, 100, 180]
+    @test Circular.wrap_curve_closed(identity, [-20., 0, 100]; rng=-180..180) ≈ [-20, 0, 100]
     @test Circular.wrap_curve_closed(identity, [10., 100, 150, -160, -20]; rng=-180..180) ≈ [-180, -160, -20, 10, 100, 150, 180]
     @test Circular.wrap_curve_closed(identity, [100., 150, 200, 300, 350, 20, 50]; rng=-180..180) ≈ [-180, -160, -60, -10, 20, 50, 100, 150, 180]
+    @test Circular.wrap_curve_closed(identity, [120., 150, 170, -170, -120, -160, 175]; rng=-180..180) ≈ [-180, -170, -120, -160, -180, NaN, 180, 175, 120, 150, 170, 180]  nans=true
 end
 
 @testset "errors" begin
