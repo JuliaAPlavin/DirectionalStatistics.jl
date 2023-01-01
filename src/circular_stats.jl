@@ -2,6 +2,7 @@ module Circular
 
 using IntervalSets
 import StatsBase
+using Accessors: set
 
 
 """ Center angular value `x` to be within a symmetric range of length `range` around `at`, from `at - range/2` to `at + range/2`. Assumes circular structure: `x + range` is equivalent to `x`.
@@ -169,5 +170,33 @@ true
 mad(x) = StatsBase.median(abs.(center_angle.(x .- median(x))))
 
 mad(x, rng::Interval) = mad(shift_range.(x, rng => -π..π)) * width(rng) / 2π
+
+
+""" Assuming `data` represents a closed curve with circular structure in `f.(data)`, wrap `data` so that it goes from `minimum(rng) + eps` to `maximum(rng) - eps`. A common usecase is plotting.
+
+```julia
+julia> wrap_curve_closed(identity, [-20., 0, 100, 200]; rng=-180..180)
+[-180, -160, -20, 0, 100, 180]  # approximately: endpoints are slightly moved inwards
+```
+"""
+function wrap_curve_closed(f, data; rng)
+    @assert issorted(data, by=f)
+	wrap_ix = findall(map(@views zip(data[begin:end-1], data[begin+1:end])) do (a, b)
+        da = floor(Int, (f(a) - minimum(rng)) / width(rng))
+        db = floor(Int, (f(b) - minimum(rng)) / width(rng))
+        @assert db <= da + 1
+		db > da
+	end)
+    isempty(wrap_ix) && return data
+
+	ix = only(wrap_ix)
+	obj = data[ix]
+	fval = f(obj)
+	obj1 = set(obj, f, maximum(rng) - 1e3*eps(fval))
+	obj2 = set(obj, f, maximum(rng) + 1e3*eps(fval))
+	map(@views [obj2; data[ix+1:end]; data[begin:ix]; obj1]) do x
+		set(x, f, to_range(f(x), rng))
+	end
+end
 
 end

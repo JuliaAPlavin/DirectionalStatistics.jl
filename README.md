@@ -65,7 +65,7 @@ julia> Circular.center_angle(10, at=0, range=3)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/circular_stats.jl#L7-L23' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/circular_stats.jl#L8-L24' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.Circular.distance-Tuple{Any, Any}' href='#DirectionalStatistics.Circular.distance-Tuple{Any, Any}'>#</a>
 **`DirectionalStatistics.Circular.distance`** &mdash; *Method*.
@@ -86,7 +86,7 @@ julia> Circular.distance(0, 5.5, range=3)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/circular_stats.jl#L40-L53' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/circular_stats.jl#L41-L54' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.Circular.mad-Tuple{Any}' href='#DirectionalStatistics.Circular.mad-Tuple{Any}'>#</a>
 **`DirectionalStatistics.Circular.mad`** &mdash; *Method*.
@@ -110,7 +110,7 @@ true
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/circular_stats.jl#L153-L169' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/circular_stats.jl#L154-L170' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.Circular.mean-Tuple{Any}' href='#DirectionalStatistics.Circular.mean-Tuple{Any}'>#</a>
 **`DirectionalStatistics.Circular.mean`** &mdash; *Method*.
@@ -131,7 +131,7 @@ true
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/circular_stats.jl#L63-L76' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/circular_stats.jl#L64-L77' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.Circular.median-Tuple{Any}' href='#DirectionalStatistics.Circular.median-Tuple{Any}'>#</a>
 **`DirectionalStatistics.Circular.median`** &mdash; *Method*.
@@ -156,7 +156,7 @@ julia> Circular.median([0, 1, 2], -2..4)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/circular_stats.jl#L102-L119' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/circular_stats.jl#L103-L120' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.Circular.sample_range-Tuple{Any}' href='#DirectionalStatistics.Circular.sample_range-Tuple{Any}'>#</a>
 **`DirectionalStatistics.Circular.sample_range`** &mdash; *Method*.
@@ -186,7 +186,7 @@ julia> Circular.sample_range([0, 1], 0..π)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/circular_stats.jl#L122-L144' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/circular_stats.jl#L123-L145' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.Circular.std-Tuple{Any}' href='#DirectionalStatistics.Circular.std-Tuple{Any}'>#</a>
 **`DirectionalStatistics.Circular.std`** &mdash; *Method*.
@@ -210,7 +210,7 @@ julia> Circular.std([0, 1, 2, 3], -10..10)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/circular_stats.jl#L82-L98' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/circular_stats.jl#L83-L99' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.Circular.to_range-Tuple{Any, Interval}' href='#DirectionalStatistics.Circular.to_range-Tuple{Any, Interval}'>#</a>
 **`DirectionalStatistics.Circular.to_range`** &mdash; *Method*.
@@ -231,7 +231,7 @@ julia> Circular.to_range(5.5, -1..1)
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/circular_stats.jl#L25-L38' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/circular_stats.jl#L26-L39' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.Circular.var-Tuple{Any}' href='#DirectionalStatistics.Circular.var-Tuple{Any}'>#</a>
 **`DirectionalStatistics.Circular.var`** &mdash; *Method*.
@@ -241,7 +241,22 @@ julia> Circular.to_range(5.5, -1..1)
 Variance of a collection of circular data. 
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/circular_stats.jl#L79' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/circular_stats.jl#L80' class='documenter-source'>source</a><br>
+
+<a id='DirectionalStatistics.Circular.wrap_curve_closed-Tuple{Any, Any}' href='#DirectionalStatistics.Circular.wrap_curve_closed-Tuple{Any, Any}'>#</a>
+**`DirectionalStatistics.Circular.wrap_curve_closed`** &mdash; *Method*.
+
+
+
+Assuming `data` represents a closed curve with circular structure in `f.(data)`, wrap `data` so that it goes from `minimum(rng) + eps` to `maximum(rng) - eps`. A common usecase is plotting.
+
+```julia
+julia> wrap_curve_closed(identity, [-20., 0, 100, 200]; rng=-180..180)
+[-180, -160, -20, 0, 100, 180]  # approximately: endpoints are slightly moved inwards
+```
+
+
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/circular_stats.jl#L175-L182' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.geometric_mad-Tuple{AbstractVector{<:Complex}}' href='#DirectionalStatistics.geometric_mad-Tuple{AbstractVector{<:Complex}}'>#</a>
 **`DirectionalStatistics.geometric_mad`** &mdash; *Method*.
@@ -253,7 +268,7 @@ Geometric Median absolute deviation (MAD) of a collection of points.
 Follows the same definition as the univariate MAD, with geometric median instead of the regular median. Rotation invariant, unlike [https://en.wikipedia.org/wiki/Median*absolute*deviation#Geometric*median*absolute_deviation].
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/geometric_median.jl#L87-L91' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/geometric_median.jl#L87-L91' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.geometric_median-Tuple{AbstractVector}' href='#DirectionalStatistics.geometric_median-Tuple{AbstractVector}'>#</a>
 **`DirectionalStatistics.geometric_median`** &mdash; *Method*.
@@ -276,7 +291,7 @@ true
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/geometric_median.jl#L69-L84' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/geometric_median.jl#L69-L84' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.most_distant_points-Tuple{Vector}' href='#DirectionalStatistics.most_distant_points-Tuple{Vector}'>#</a>
 **`DirectionalStatistics.most_distant_points`** &mdash; *Method*.
@@ -297,7 +312,7 @@ julia> most_distant_points([[0, 0], [0, 1], [1, 1]])
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/DirectionalStatistics.jl#L15-L28' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/DirectionalStatistics.jl#L15-L28' class='documenter-source'>source</a><br>
 
 <a id='DirectionalStatistics.most_distant_points_ix-Tuple{Vector}' href='#DirectionalStatistics.most_distant_points_ix-Tuple{Vector}'>#</a>
 **`DirectionalStatistics.most_distant_points_ix`** &mdash; *Method*.
@@ -318,5 +333,5 @@ julia> most_distant_points_ix([[0, 0], [0, 1], [1, 1]])
 ```
 
 
-<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/44bf8c46dc1fc18d6853502900232c4dd03abdc6/src/DirectionalStatistics.jl#L30-L43' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/aplavin/DirectionalStatistics.jl/blob/36882fdcfba708ca6db844456b9b9f1f97f7c21d/src/DirectionalStatistics.jl#L30-L43' class='documenter-source'>source</a><br>
 

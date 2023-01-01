@@ -160,6 +160,13 @@ end
     @test Circular.var([20, 21, 22, 18, 19, 20.5, NaN]) |> isnan
 end
 
+@testset "wrap_curve" begin
+    @test Circular.wrap_curve_closed(identity, [-20., 0, 100]; rng=-180..180) == [-20, 0, 100]
+    @test Circular.wrap_curve_closed(identity, [-20., 0, 100, 200]; rng=-180..180) ≈ [-180, -160, -20, 0, 100, 180]
+    @test Circular.wrap_curve_closed(identity, [-200, -20., 0, 100]; rng=-180..180) ≈ [-180, -20, 0, 100, 160, 180]
+    @test Circular.wrap_curve_closed(identity, [500., 510, 600]; rng=-180..180) ≈ [-180, -120, 140, 150, 180]
+end
+
 @testset "errors" begin
     # MethodError on julia 1.8+, ArgumentError on earlier versions
     # https://github.com/JuliaLang/julia/pull/41885
