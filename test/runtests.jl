@@ -2,15 +2,6 @@ using TestItems
 using TestItemRunner
 @run_package_tests
 
-# using Statistics: mean, median, std, var
-# using StatsBase: mad
-# using IntervalSets
-# using DirectionalStatistics
-# using StaticArrays
-# using Random
-# using InverseFunctions
-# using Accessors
-
 
 @testitem "Base.isnan" begin
     isnan(mod2pi(NaN))
