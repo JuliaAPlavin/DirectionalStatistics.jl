@@ -2,7 +2,7 @@ module Circular
 
 using IntervalSets
 import StatsBase
-using Accessors
+using AccessorsExtra
 using InverseFunctions
 import ..shift_range
 
@@ -150,12 +150,24 @@ julia> Circular.sample_range([0, 1], 0..π)
 ```
 """
 function sample_range(x)
-    xs = sort(to_range.(x, Ref(0..2π)))
-    spacings = [diff(xs); to_range(xs[begin] - xs[end], 0..2π)]
+    xs = sort(to_range.(x, Ref(-π..π)))
+    spacings = [diff(xs); mod2pi(xs[begin] - xs[end])]
     return 2π - maximum(spacings)
 end
 
+function sample_interval(x)
+    xs = sort(to_range.(x, Ref(-π..π)))
+    spacings = [diff(xs); mod2pi(xs[begin] - xs[end])]
+    i = argmax(spacings)
+    return xs[mod(i+1, eachindex(xs))]..xs[mod(i, eachindex(xs))]
+end
+
 sample_range(x, rng::Interval) = sample_range(shift_range.(x, rng => -π..π)) * width(rng) / 2π
+function sample_interval(x, rng::Interval)
+    sr = @optic shift_range(_, rng => -π..π)
+    int = sample_interval(map(sr, x))
+    return @modify(inverse(sr), endpoints(int) |> Elements())
+end
 
 
 """ Median absolute deviation (MAD) of a collection of circular data.

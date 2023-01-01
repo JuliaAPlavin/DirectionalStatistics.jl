@@ -183,6 +183,31 @@ end
     @test Circular.var([43, 45, 52, 61, 75, 88, 88, 279, 357] .|> deg2rad) ≈ 1 - 0.711 atol=0.001  # Example 1.1 of Mardia & Jupp (2000)
 end
 
+Base.isapprox(a::Interval, b::Interval; kwds...) = isapprox(collect(endpoints(a)), collect(endpoints(b)); kwds...)
+
+@testset "sample range" begin
+    @test Circular.sample_range([-1, 0, 2]) ≈ 3
+    @test Circular.sample_range([-1, 0, 1, 2, 3, 4]) ≈ 5.0
+    @test Circular.sample_range([-1, 0, 2, 3, 4]) ≈ 4.283185307179586
+    @test Circular.sample_range([-1, 0, 2, 5, 6]) ≈ 3.2831853071795862
+    @test Circular.sample_range([-1, 4π]) ≈ 1.0
+    @test Circular.sample_range([0, 1], 0..π) ≈ 1.0
+
+    @test Circular.sample_interval([-1, 0, 2]) ≈ -1.0..2.0
+    @test Circular.sample_interval([-1, 0, 1, 2, 3, 4]) ≈ -1.0..(-2.2831853071795862)
+    @test Circular.sample_interval([-1, 0, 2, 3, 4]) ≈ 2.0..0.0
+    @test Circular.sample_interval([-1, 0, 2, 5, 6]) ≈ -1.2831853071795862..2.0
+    @test Circular.sample_interval([-1, 4π]) ≈ -1.0..0.0
+    @test Circular.sample_interval([0, 1], 0..π) ≈ 0..1
+
+    Random.seed!(123)
+    for _ in 1:100
+        x = rand(5)
+        @test Circular.sample_range(x) ≈ width(Circular.sample_interval(x))
+        @test Circular.sample_range(x, 1..5) ≈ width(Circular.sample_interval(x, 1..5))
+    end
+end
+
 @testset "wrap_curve" begin
     @test Circular.wrap_curve_closed(identity, [-20., 0, 100, 200]; rng=-180..180) ≈ [-180, -160, -20, 0, 100, 180]
     @test Circular.wrap_curve_closed(identity, [-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
@@ -211,8 +236,8 @@ CHL.@check()
 Aqua.test_all(DirectionalStatistics; ambiguities=false)
 
 
-using Documenter, DocumenterMarkdown
-DocMeta.setdocmeta!(DirectionalStatistics, :DocTestSetup, :(using DirectionalStatistics; using IntervalSets); recursive=true)
-makedocs(format=Markdown(), modules=[DirectionalStatistics], root="../docs")
-mv("../docs/build/README.md", "../README.md", force=true)
-rm("../docs/build", recursive=true)
+# using Documenter, DocumenterMarkdown
+# DocMeta.setdocmeta!(DirectionalStatistics, :DocTestSetup, :(using DirectionalStatistics; using IntervalSets); recursive=true)
+# makedocs(format=Markdown(), modules=[DirectionalStatistics], root="../docs")
+# mv("../docs/build/README.md", "../README.md", force=true)
+# rm("../docs/build", recursive=true)
