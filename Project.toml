@@ -1,7 +1,7 @@
 name = "DirectionalStatistics"
 uuid = "e814f24e-44b0-11e9-2fd5-aba2b6113d95"
 authors = ["Alexander Plavin <alexander@plav.in>"]
-version = "0.1.18"
+version = "0.1.19"
 
 [deps]
 AccessorsExtra = "33016aad-b69d-45be-9359-82a41f556fd4"
@@ -13,7 +13,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
 AccessorsExtra = "0.1.7"
-IntervalSets = "0.5, 0.6, 0.7"
+IntervalSets = "0.7.2"
 InverseFunctions = "0.1.7"
 StatsBase = "0.33"
 julia = "1.5"

@@ -87,6 +87,8 @@ end
         @test Circular.center_angle(x) ≈ x
         @test Circular.center_angle(x + 2pi) ≈ x
         @test Circular.center_angle(x - 2pi) ≈ x
+
+        # to_range is effectively deprecated
         @test Circular.to_range(x, -pi..pi) ≈ x
         @test Circular.to_range(x + 2pi, -pi..pi) ≈ x
         @test Circular.to_range(x - 2pi, -pi..pi) ≈ x

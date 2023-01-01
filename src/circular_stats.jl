@@ -23,9 +23,11 @@ julia> Circular.center_angle(10, at=0, period=3)
 1.0
 ```
 """
-center_angle(x; at=0, period=2π, range=period) = to_range(x, at ± range/2)
+center_angle(x; at=0, period=2π, range=period) = mod(x, at ± range/2)
 
 """ Transform `x` to be within the range `rng` assuming circular structure: `x + width(rng)` is equivalent to `x`. In effect, this adds the necessary multiple of `width(rng)` to `x` so that it falls into `rng`.
+
+This is deprecated, and means the same as `mod(x, rng)`.
 
 ```jldoctest
 julia> Circular.to_range(0, 0..2π)
@@ -38,8 +40,7 @@ julia> Circular.to_range(5.5, -1..1)
 -0.5
 ```
 """
-to_range(x, rng::Interval) = mod(x - rng.left, width(rng)) + rng.left
-Accessors.set(x, f::Base.Fix2{typeof(to_range)}, v) = @set mod(x - f.x.left, width(f.x)) + f.x.left = v
+to_range(x, rng::Interval) = mod(x, rng)
 
 """ Distance between two angles, `x` and `y`. Assumes circular structure: `x + period` is equivalent to `x`.
 
@@ -150,13 +151,13 @@ julia> Circular.sample_range([0, 1], 0..π)
 ```
 """
 function sample_range(x)
-    xs = sort(to_range.(x, Ref(-π..π)))
+    xs = sort(mod.(x, Ref(-π..π)))
     spacings = [diff(xs); mod2pi(xs[begin] - xs[end])]
     return 2π - maximum(spacings)
 end
 
 function sample_interval(x)
-    xs = sort(to_range.(x, Ref(-π..π)))
+    xs = sort(mod.(x, Ref(-π..π)))
     spacings = [diff(xs); mod2pi(xs[begin] - xs[end])]
     i = argmax(spacings)
     return xs[mod(i+1, eachindex(xs))]..xs[mod(i, eachindex(xs))]
@@ -207,7 +208,7 @@ function unwrap!(A::AbstractVector; refix=firstindex(A), period=2π, tol=period/
     for ixs in [(refix + 1):lastindex(A), (refix - 1):-1:firstindex(A)]
         for i in ixs
             Δ = A[i] - A[i - step(ixs)]
-            Δmod = to_range(Δ, 0 ± period/2)
+            Δmod = mod(Δ, 0 ± period/2)
             correction = abs(Δ) > tol ? Δmod - Δ : zero(Δmod)
             # @info "" A[i] A[i-1] Δ Δmod correction
             A[i] += correction
@@ -232,11 +233,11 @@ function wrap_curve_closed end
 wrap_curve_closed(data; rng) = wrap_curve_closed(identity, data; rng)
 function wrap_curve_closed(f, data; rng)
     # try putting all values into range
-    data = @modify(fx -> to_range(fx, rng), data |> Elements() |> f)
+    data = @modify(fx -> mod(fx, rng), data |> Elements() |> f)
 
     # this isn't always possible: e.g. SkyCoords always do mod2pi(ra) on construction
     # but proper range boundaries are needed in is_wrap()
-    f_rng = @optic to_range(f(_), rng)
+    f_rng = @optic mod(f(_), rng)
     is_wrap(a, b) = distance(f(a), f(b); period=width(rng)) < abs(f_rng(a) - f_rng(b)) * (1 - √eps(1.))
 
     data = @modify(data |> _ConsecutivePairs() |> If(((a, b),) -> is_wrap(a, b))) do p
@@ -254,7 +255,7 @@ function wrap_curve_closed(f, data; rng)
 end
 
 function _nearest_endpoint(int, x; pad)
-    x = to_range(x, int)
+    x = mod(x, int)
     ep = argmin(ep -> abs(ep - x), endpoints(int))
     ep + sign(x - ep) * pad
 end
