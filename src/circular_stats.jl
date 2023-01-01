@@ -191,6 +191,33 @@ mad(x) = StatsBase.median(abs.(center_angle.(x .- median(x))))
 mad(x, rng::Interval) = mad(shift_range.(x, rng => -π..π)) * width(rng) / 2π
 
 
+"""    unwrap(A; refix=firstindex(A), period=2π, tol=period/2)
+
+Assumes `A` is a sequence of values that has been wrapped with the given `period`, and undoes the wrapping by identifying discontinuities.
+Whenever the jump between consecutive values is greater than or equal to `tol`, shift the later value by adding the proper multiple of `period`.
+"""
+unwrap(A::AbstractVector; kwargs...) = unwrap!(copy(A); kwargs...)
+
+"""    unwrap!(A; refix=firstindex(A), period=2π, tol=period/2)
+
+Assumes `A` is a sequence of values that has been wrapped with the given `period`, and undoes the wrapping by identifying discontinuities.
+Whenever the jump between consecutive values is greater than or equal to `tol`, shift the later value by adding the proper multiple of `period`.
+"""
+function unwrap!(A::AbstractVector; refix=firstindex(A), period=2π, tol=period/2)
+    @assert tol ≥ period / 2
+    for ixs in [(refix + 1):lastindex(A), (refix - 1):-1:firstindex(A)]
+        for i in ixs
+            Δ = A[i] - A[i - step(ixs)]
+            Δmod = to_range(Δ, 0 ± period/2)
+            correction = abs(Δ) > tol ? Δmod - Δ : zero(Δmod)
+            # @info "" A[i] A[i-1] Δ Δmod correction
+            A[i] += correction
+        end
+    end
+    return A
+end
+
+
 """    wrap_curve_closed([f=identity], data; rng)
 
 Assuming `data` represents a closed curve with circular structure in `f.(data)`, wrap `data` so that it goes from `minimum(rng) + eps` to `maximum(rng) - eps`.

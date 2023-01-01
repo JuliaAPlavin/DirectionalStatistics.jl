@@ -209,6 +209,34 @@ Base.isapprox(a::Interval, b::Interval; kwds...) = isapprox(collect(endpoints(a)
     end
 end
 
+@testset "unwrap" begin
+    @test Circular.unwrap([0.1, 0.2, 0.3, 0.4]) ≈ [0.1, 0.2, 0.3, 0.4]
+    @test Circular.unwrap([0.1, 0.2 + 2π, 0.3, 0.4]) ≈ [0.1, 0.2, 0.3, 0.4]
+    @test Circular.unwrap([0.1, 0.2 - 2π, 0.3, 0.4]) ≈ [0.1, 0.2, 0.3, 0.4]
+    @test Circular.unwrap([0.1, 0.2 - 2π, 0.3 - 2π, 0.4]) ≈ [0.1, 0.2, 0.3, 0.4]
+    @test Circular.unwrap([0.1 + 2π, 0.2, 0.3, 0.4]) ≈ [0.1 + 2π, 0.2 + 2π, 0.3 + 2π, 0.4 + 2π]
+    @test Circular.unwrap([0.1, 0.2 + 6pi, 0.3, 0.4]) ≈ [0.1, 0.2, 0.3, 0.4]
+    
+    @test Circular.unwrap([0.1, 0.2 + 2π, 0.3, 0.4]; refix=2) ≈ [0.1, 0.2, 0.3, 0.4] .+ 2π
+
+    unwrapped = 1:100
+    wrapped = unwrapped .% 10
+    @test Circular.unwrap(wrapped; period=10)::Vector{Int} == unwrapped
+
+    test_v = [0.1, 0.2, 0.3 + 2π, 0.4]
+    @test Circular.unwrap(test_v) ≈ [0.1, 0.2, 0.3, 0.4]
+    @test test_v == [0.1, 0.2, 0.3 + 2π, 0.4]
+    @test Circular.unwrap!(test_v) === test_v ≈ [0.1, 0.2, 0.3, 0.4]
+
+    for _ in 1:10
+        unwrapped = cumsum(rand(-1..1, 10))
+        period = 2 + rand()
+        wrapped = unwrapped .% period
+        @test Circular.unwrap(wrapped; period) ≈ unwrapped
+        @test Circular.unwrap(wrapped; refix=5, period) ≈ unwrapped .+ (wrapped[5] - unwrapped[5])
+    end
+end
+
 @testset "wrap_curve" begin
     @test Circular.wrap_curve_closed([-20., 0, 100, 200]; rng=-180..180) ≈ [-180, -160, -20, 0, 100, 180]
     @test Circular.wrap_curve_closed([-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
