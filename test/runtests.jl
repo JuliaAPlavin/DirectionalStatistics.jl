@@ -94,8 +94,8 @@ end
 
     @test Circular.distance(0.5, 1.3) ≈ 0.8
     @test Circular.distance(0.5, 4π + 1.3) ≈ 0.8
-    @test Circular.distance(0.5, 4π + 1.3, range=2π) ≈ 0.8
-    @test Circular.distance(0.5, 0.25, range=0.1) ≈ 0.05
+    @test Circular.distance(0.5, 4π + 1.3, period=2π) ≈ 0.8
+    @test Circular.distance(0.5, 0.25, period=0.1) ≈ 0.05
 end
 
 @testset "angular mean" begin

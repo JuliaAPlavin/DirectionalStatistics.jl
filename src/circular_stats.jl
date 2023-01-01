@@ -7,7 +7,7 @@ using InverseFunctions
 import ..shift_range
 
 
-""" Center angular value `x` to be within a symmetric range of length `range` around `at`, from `at - range/2` to `at + range/2`. Assumes circular structure: `x + range` is equivalent to `x`.
+""" Center angular value `x` to be within a symmetric range of length `period` around `at`, from `at - period/2` to `at + period/2`. Assumes circular structure: `x + period` is equivalent to `x`.
 
 ```jldoctest
 julia> Circular.center_angle(0)
@@ -19,11 +19,11 @@ julia> Circular.center_angle(4π + 1)
 julia> Circular.center_angle(4π - 1)
 -1.0
 
-julia> Circular.center_angle(10, at=0, range=3)
+julia> Circular.center_angle(10, at=0, period=3)
 1.0
 ```
 """
-center_angle(x; at = 0, range = 2π) = to_range(x, (at - range / 2)..(at + range/2))
+center_angle(x; at=0, period=2π, range=period) = to_range(x, at ± range/2)
 
 """ Transform `x` to be within the range `rng` assuming circular structure: `x + width(rng)` is equivalent to `x`. In effect, this adds the necessary multiple of `width(rng)` to `x` so that it falls into `rng`.
 
@@ -41,7 +41,7 @@ julia> Circular.to_range(5.5, -1..1)
 to_range(x, rng::Interval) = mod(x - rng.left, width(rng)) + rng.left
 Accessors.set(x, f::Base.Fix2{typeof(to_range)}, v) = @set mod(x - f.x.left, width(f.x)) + f.x.left = v
 
-""" Distance between two angles, `x` and `y`. Assumes circular structure: `x + range` is equivalent to `x`.
+""" Distance between two angles, `x` and `y`. Assumes circular structure: `x + period` is equivalent to `x`.
 
 ```jldoctest
 julia> Circular.distance(0, 1)
@@ -50,11 +50,11 @@ julia> Circular.distance(0, 1)
 julia> Circular.distance(0, 4π + 1)
 1.0
 
-julia> Circular.distance(0, 5.5, range=3)
+julia> Circular.distance(0, 5.5, period=3)
 0.5
 ```
 """
-distance(x, y; range=2π) = abs(center_angle(x - y; range=range))
+distance(x, y; period=2π, range=period) = abs(center_angle(x - y; range))
 
 
 resultant_vector(x) = sum(cis, x)
@@ -237,7 +237,7 @@ function wrap_curve_closed(f, data; rng)
     # this isn't always possible: e.g. SkyCoords always do mod2pi(ra) on construction
     # but proper range boundaries are needed in is_wrap()
     f_rng = @optic to_range(f(_), rng)
-    is_wrap(a, b) = distance(f(a), f(b); range=width(rng)) < abs(f_rng(a) - f_rng(b)) * (1 - √eps(1.))
+    is_wrap(a, b) = distance(f(a), f(b); period=width(rng)) < abs(f_rng(a) - f_rng(b)) * (1 - √eps(1.))
 
     data = @modify(data |> _ConsecutivePairs() |> If(((a, b),) -> is_wrap(a, b))) do p
         [
