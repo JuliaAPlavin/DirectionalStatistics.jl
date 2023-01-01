@@ -277,17 +277,94 @@ end
 @testitem "wrap_curve" begin
     using IntervalSets
     using Accessors
+    using SkyCoords
+    using SkyCoords: lat, lon
+    using StaticArrays
 
-    @test Circular.wrap_curve_closed([-20., 0, 100, 200]; rng=-180..180) ≈ [-180, -160, -20, 0, 100, 180]
-    @test Circular.wrap_curve_closed([-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
-    @test Circular.wrap_curve_closed(360*10 .+ [-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
-    @test Circular.wrap_curve_closed([100., 150, 200, 340, 370]; rng=-180..180) ≈ [-180, -160, -20, 10, 100, 150, 180]
-    @test Circular.wrap_curve_closed([-20., 0, 100]; rng=-180..180) ≈ [-20, 0, 100]
-    @test Circular.wrap_curve_closed([10., 100, 150, -160, -20]; rng=-180..180) ≈ [-180, -160, -20, 10, 100, 150, 180]
-    @test Circular.wrap_curve_closed([100., 150, 200, 300, 350, 20, 50]; rng=-180..180) ≈ [-180, -160, -60, -10, 20, 50, 100, 150, 180]
-    @test Circular.wrap_curve_closed([120., 150, 170, -170, -120, -160, 175]; rng=-180..180) ≈ [-180, -170, -120, -160, -180, NaN, 180, 175, 120, 150, 170, 180]  nans=true
-   
-    @test @optic(_.a).(Circular.wrap_curve_closed(@optic(_.a), [(a=-20.,), (a=0.,), (a=100.,), (a=200.,)]; rng=-180..180)) ≈ [-180, -160, -20, 0, 100, 180]
+    Base.isapprox(a::Vector{<:ICRSCoords}, b::Vector{<:ICRSCoords}; kwargs...) = all(map((a, b) -> isapprox(a, b; kwargs...), a, b))
+    function ≈ₐ(a, b; kwargs...)
+        res = all(map((a, b) -> isapprox(a, Circular.center_angle(b; at=a, period=360); kwargs...), a, b))
+        res || @show a b
+        res
+    end
+
+    @testset for (orig, rng, expected) in [
+        ([-20., 0, 100, 200], -180..180, [-180, -160, -20, 0, 100, 180]),
+        ([-200, -60., 0, 100], -180..180, [-180, -60, 0, 100, 160, 180]),
+        (360*10 .+ [-200, -60., 0, 100], -180..180, [-180, -60, 0, 100, 160, 180]),
+        ([100., 150, 200, 340, 370], -180..180, [-180, -160, -20, 10, 100, 150, 180]),
+        ([-20., 0, 100], -180..180, [-20, 0, 100]),
+        ([10., 100, 150, -160, -20], -180..180, [-180, -160, -20, 10, 100, 150, 180]),
+        ([100., 150, 200, 300, 350, 20, 50], -180..180, [-180, -160, -60, -10, 20, 50, 100, 150, 180]),
+        ([120., 150, 170, -170, -120, -160, 175], -180..180, [-180, -170, -120, -160, -180, NaN, 180, 175, 120, 150, 170, 180]),
+    ]
+        @test Circular.wrap_curve_closed(orig; rng) ≈ expected  nans=true atol=1e-5
+        @test Circular.wrap_curve_closed(orig .- leftendpoint(rng); rng=0..width(rng)) ≈ expected .- leftendpoint(rng)  nans=true atol=1e-5
+        opt = @optic(_.a)
+        @test opt.(Circular.wrap_curve_closed(opt, [(;a) for a in orig]; rng)) ≈ expected  nans=true atol=1e-5
+        @test opt.(Circular.wrap_curve_closed(opt, [(;a) for a in orig .- leftendpoint(rng)]; rng=0..width(rng))) ≈ expected .- leftendpoint(rng)  nans=true atol=1e-5
+        opt = @optic(rad2deg(_.ra))
+        @test opt.(Circular.wrap_curve_closed(opt, ICRSCoords.(deg2rad.(orig), 1); rng)) ≈ₐ
+            opt.(ICRSCoords.(deg2rad.(expected), 1))  nans=true atol=1e-5
+        @test opt.(Circular.wrap_curve_closed(opt, ICRSCoords.(deg2rad.(orig .- leftendpoint(rng)), 1); rng=0..width(rng))) ≈ₐ
+            opt.(ICRSCoords.(deg2rad.(expected .- leftendpoint(rng)), 1))  nans=true atol=1e-5
+    end
+
+    orig = [
+        ICRSCoords(1.50805, 0.505031),
+        ICRSCoords(1.85171, -0.109732),
+        ICRSCoords(2.25097, -0.709714),
+        ICRSCoords(3.25418, -1.09477),
+        ICRSCoords(4.39375, -0.789696),
+        ICRSCoords(4.83251, -0.200514),
+        ICRSCoords(5.16576, 0.416966),
+        ICRSCoords(5.75965, 0.960801),
+        ICRSCoords(0.817046, 1.01749),
+        ICRSCoords(1.50805, 0.505031),
+    ]
+    actual = Circular.wrap_curve_closed(@optic(rad2deg(_.ra)), orig; rng=0..360)
+    @test actual ≈ [
+        ICRSCoords(0, 1.01749),
+        ICRSCoords(0.817046, 1.01749),
+        ICRSCoords(1.50805, 0.505031),
+        ICRSCoords(1.50805, 0.505031),
+        ICRSCoords(1.85171, -0.109732),
+        ICRSCoords(2.25097, -0.709714),
+        ICRSCoords(3.25418, -1.09477),
+        ICRSCoords(4.39375, -0.789696),
+        ICRSCoords(4.83251, -0.200514),
+        ICRSCoords(5.16576, 0.416966),
+        ICRSCoords(5.75965, 0.960801),
+        ICRSCoords(2π - eps(1.), 0.960801),
+    ]  rtol=1e-5
+
+    orig = [
+        ICRSCoords(1.5080515357473396, 0.505031),
+        ICRSCoords(1.85171, -0.109732),
+        ICRSCoords(2.25097, -0.709714),
+        ICRSCoords(3.25418, -1.09477),
+        ICRSCoords(4.39375, -0.789696),
+        ICRSCoords(4.83251, -0.200514),
+        ICRSCoords(5.16576, 0.416966),
+        ICRSCoords(5.75965, 0.960801),
+        ICRSCoords(0.817046, 1.01749),
+        ICRSCoords(1.5080515357473394, 0.505031),
+    ]
+    actual = Circular.wrap_curve_closed(@optic(_.ra), orig; rng=0..2π)
+    @test actual ≈ [
+        ICRSCoords(0, 1.01749),
+        ICRSCoords(0.817046, 1.01749),
+        ICRSCoords(1.5080515357473394, 0.505031),
+        ICRSCoords(1.5080515357473396, 0.505031),
+        ICRSCoords(1.85171, -0.109732),
+        ICRSCoords(2.25097, -0.709714),
+        ICRSCoords(3.25418, -1.09477),
+        ICRSCoords(4.39375, -0.789696),
+        ICRSCoords(4.83251, -0.200514),
+        ICRSCoords(5.16576, 0.416966),
+        ICRSCoords(5.75965, 0.960801),
+        ICRSCoords(2π - eps(1.), 0.960801),
+    ]  rtol=1e-5
 end
 
 @testitem "errors" begin

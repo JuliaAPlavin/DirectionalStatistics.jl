@@ -232,20 +232,22 @@ function wrap_curve_closed end
 
 wrap_curve_closed(data; rng) = wrap_curve_closed(identity, data; rng)
 function wrap_curve_closed(f, data; rng)
+    ε = √eps(1.0)
+
     # try putting all values into range
     data = @modify(fx -> mod(fx, rng), data |> Elements() |> f)
 
     # this isn't always possible: e.g. SkyCoords always do mod2pi(ra) on construction
     # but proper range boundaries are needed in is_wrap()
     f_rng = @optic mod(f(_), rng)
-    is_wrap(a, b) = distance(f(a), f(b); period=width(rng)) < abs(f_rng(a) - f_rng(b)) * (1 - √eps(1.))
+    is_wrap(a, b) = distance(f(a), f(b); period=width(rng)) < abs(f_rng(a) - f_rng(b)) * (1 - ε) - ε
 
     data = @modify(data |> _ConsecutivePairs() |> If(((a, b),) -> is_wrap(a, b))) do p
         [
             p[1],
-            modify(fx -> _nearest_endpoint(rng, fx; pad=√eps(1.)), p[1], f),
+            modify(fx -> _nearest_endpoint(rng, fx; pad=ε), p[1], f),
             set(p[2], f, NaN),
-            modify(fx -> _nearest_endpoint(rng, fx; pad=√eps(1.)), p[2], f),
+            modify(fx -> _nearest_endpoint(rng, fx; pad=ε), p[2], f),
             p[2],
         ]
     end
