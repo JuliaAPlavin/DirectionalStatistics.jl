@@ -10,6 +10,12 @@ export
     GeometricMedianAlgo, geometric_median, geometric_mad
 
 
+# https://github.com/JuliaLang/julia/pull/36420
+if !isnan(mod2pi(NaN))
+    Base.mod2pi(x::AbstractFloat) = isnan(x) ? x : rem2pi(x, RoundDown)
+end
+
+
 shift_range(x, (from, to)::Pair) = (x - from.left) / width(from) * width(to) + to.left
 InverseFunctions.inverse(f::Base.Fix2{typeof(shift_range)}) = Base.Fix2(shift_range, reverse(f.x))
 

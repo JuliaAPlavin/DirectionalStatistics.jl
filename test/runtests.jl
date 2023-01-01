@@ -8,6 +8,8 @@ using Random
 using InverseFunctions
 
 
+@test isnan(mod2pi(NaN))
+
 @testset "most distant points" begin
     x = [2, 39, 17, 7, -90, 45, 105, -30, 26, -4]
     @test Set(most_distant_points(x)) == Set([-90, 105])
