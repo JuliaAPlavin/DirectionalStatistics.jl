@@ -183,7 +183,7 @@ function wrap_curve_closed(f, data; rng)
 	wrap_ix = findall(map(@views zip(data[begin:end-1], data[begin+1:end])) do (a, b)
         da = floor(Int, (f(a) - minimum(rng)) / width(rng))
         db = floor(Int, (f(b) - minimum(rng)) / width(rng))
-        @assert db in (da, da + 1)
+        @assert db in (da - 1, da, da + 1)
 		db > da || db == da && f(b) < f(a)
 	end)
     wrap_ix = isempty(wrap_ix) ? [lastindex(data)] : wrap_ix

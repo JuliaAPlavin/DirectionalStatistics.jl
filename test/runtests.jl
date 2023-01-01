@@ -167,6 +167,7 @@ end
     @test Circular.wrap_curve_closed(identity, [100., 150, 200, 340, 370]; rng=-180..180) ≈ [-180, -160, -20, 10, 100, 150, 180]
     @test Circular.wrap_curve_closed(identity, [-20., 0, 100]; rng=-180..180) ≈ [-180, -20, 0, 100, 180]
     @test Circular.wrap_curve_closed(identity, [10., 100, 150, -160, -20]; rng=-180..180) ≈ [-180, -160, -20, 10, 100, 150, 180]
+    @test Circular.wrap_curve_closed(identity, [100., 150, 200, 300, 350, 20, 50]; rng=-180..180) ≈ [-180, -160, -60, -10, 20, 50, 100, 150, 180]
 end
 
 @testset "errors" begin
