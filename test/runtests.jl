@@ -1,17 +1,24 @@
-using Test
-using Statistics: mean, median, std, var
-using StatsBase: mad
-using IntervalSets
-using DirectionalStatistics
-using StaticArrays
-using Random
-using InverseFunctions
-using Accessors
+using TestItems
+using TestItemRunner
+@run_package_tests
+
+# using Statistics: mean, median, std, var
+# using StatsBase: mad
+# using IntervalSets
+# using DirectionalStatistics
+# using StaticArrays
+# using Random
+# using InverseFunctions
+# using Accessors
 
 
-@test isnan(mod2pi(NaN))
+@testitem "Base.isnan" begin
+    isnan(mod2pi(NaN))
+end
 
-@testset "most distant points" begin
+@testitem "most distant points" begin
+    using StaticArrays
+
     x = [2, 39, 17, 7, -90, 45, 105, -30, 26, -4]
     @test Set(most_distant_points(x)) == Set([-90, 105])
     @test Set(most_distant_points_ix(x)) == Set([5, 7])
@@ -25,7 +32,10 @@ using Accessors
     @test Set(most_distant_points_ix(x)) == Set([5, 7])
 end
 
-@testset "vec_std" begin
+@testitem "vec_std" begin
+    using StaticArrays
+    using Statistics
+
     a = rand(10)
     @test vec_std(a) ≈ std(a)
     @test vec_std([[x] for x in a]) ≈ std(a)
@@ -33,7 +43,10 @@ end
     @test vec_std(SVector.(real(a), imag(a))) ≈ std(a)
 end
 
-@testset "geometric median" begin
+@testitem "geometric median" begin
+    using StaticArrays
+    using Statistics
+
     @testset for geomed in [
             geometric_median,
             A -> geometric_median(GeometricMedianAlgo.Weiszfeld(), A),
@@ -55,7 +68,10 @@ end
     end
 end
 
-@testset "geometric mad" begin
+@testitem "geometric mad" begin
+    using StaticArrays
+    using StatsBase
+
     n = 1000
     vals = randn(n) .+ im .* randn(n)
     @test 1.1 < geometric_mad(vals) < 1.3
@@ -74,7 +90,10 @@ end
     end
 end
 
-@testset "linear range shift" begin
+@testitem "linear range shift" begin
+    using IntervalSets
+    using InverseFunctions
+
     f = Base.Fix2(shift_range, 1..2 => 20..30)
     @test f(1) == 20
     @test f(1.6) == 26
@@ -82,7 +101,9 @@ end
     InverseFunctions.test_inverse(f, 1.2)
 end
 
-@testset "angle range shift" begin
+@testitem "angle range shift" begin
+    using IntervalSets
+
     for x in [0.01, 1, pi - 0.01, -2]
         @test Circular.center_angle(x) ≈ x
         @test Circular.center_angle(x + 2pi) ≈ x
@@ -100,7 +121,10 @@ end
     @test Circular.distance(0.5, 0.25, period=0.1) ≈ 0.05
 end
 
-@testset "angular mean" begin
+@testitem "angular mean" begin
+    using Statistics
+    using IntervalSets
+
     @test Circular.mean(zeros(10)) ≈ 0
     @test Circular.mean(ones(10)) ≈ 1
     @test Circular.mean(.-ones(10)) ≈ -1
@@ -136,7 +160,9 @@ end
     end
 end
 
-@testset "angular median" begin
+@testitem "angular median" begin
+    using IntervalSets
+
     @test Circular.median([0]) == 0
     @test Circular.median([0, 0, 0]) == 0
     @test Circular.median([-9π/16, -9π/16, 0, 9π/16, 9π/16]) == 0
@@ -149,7 +175,10 @@ end
     @test Circular.median([43, 45, 52, 61, 75, 88, 88, 279, 357], 0..360) ≈ 52  # Example 1.1 of Mardia & Jupp (2000)
 end
 
-@testset "angular spread" begin
+@testitem "angular spread" begin
+    using Statistics
+    using IntervalSets
+
     @test Circular.std(zeros(10)) ≈ 0
     @test Circular.std(fill(123, 10)) ≈ 0
     @test Circular.var(zeros(10)) ≈ 0
@@ -186,9 +215,13 @@ end
     @test Circular.var([43, 45, 52, 61, 75, 88, 88, 279, 357] .|> deg2rad) ≈ 1 - 0.711 atol=0.001  # Example 1.1 of Mardia & Jupp (2000)
 end
 
-Base.isapprox(a::Interval, b::Interval; kwds...) = isapprox(collect(endpoints(a)), collect(endpoints(b)); kwds...)
 
-@testset "sample range" begin
+@testitem "sample range" begin
+    using IntervalSets
+    import Random
+
+    Base.isapprox(a::Interval, b::Interval; kwds...) = isapprox(collect(endpoints(a)), collect(endpoints(b)); kwds...)
+
     @test Circular.sample_range([-1, 0, 2]) ≈ 3
     @test Circular.sample_range([-1, 0, 1, 2, 3, 4]) ≈ 5.0
     @test Circular.sample_range([-1, 0, 2, 3, 4]) ≈ 4.283185307179586
@@ -211,7 +244,9 @@ Base.isapprox(a::Interval, b::Interval; kwds...) = isapprox(collect(endpoints(a)
     end
 end
 
-@testset "unwrap" begin
+@testitem "unwrap" begin
+    using IntervalSets
+
     @test Circular.unwrap([0.1, 0.2, 0.3, 0.4]) ≈ [0.1, 0.2, 0.3, 0.4]
     @test Circular.unwrap([0.1, 0.2 + 2π, 0.3, 0.4]) ≈ [0.1, 0.2, 0.3, 0.4]
     @test Circular.unwrap([0.1, 0.2 - 2π, 0.3, 0.4]) ≈ [0.1, 0.2, 0.3, 0.4]
@@ -239,7 +274,10 @@ end
     end
 end
 
-@testset "wrap_curve" begin
+@testitem "wrap_curve" begin
+    using IntervalSets
+    using Accessors
+
     @test Circular.wrap_curve_closed([-20., 0, 100, 200]; rng=-180..180) ≈ [-180, -160, -20, 0, 100, 180]
     @test Circular.wrap_curve_closed([-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
     @test Circular.wrap_curve_closed(360*10 .+ [-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
@@ -252,7 +290,7 @@ end
     @test @optic(_.a).(Circular.wrap_curve_closed(@optic(_.a), [(a=-20.,), (a=0.,), (a=100.,), (a=200.,)]; rng=-180..180)) ≈ [-180, -160, -20, 0, 100, 180]
 end
 
-@testset "errors" begin
+@testitem "errors" begin
     # MethodError on julia 1.8+, ArgumentError on earlier versions
     # https://github.com/JuliaLang/julia/pull/41885
     exc_type = Union{ArgumentError, MethodError}
@@ -262,8 +300,11 @@ end
     @test_throws exc_type Circular.median([])
 end
 
+@testitem "_" begin
+    import Aqua
+    Aqua.test_all(DirectionalStatistics; ambiguities=false)
+    Aqua.test_ambiguities(DirectionalStatistics)
 
-import Aqua
-import CompatHelperLocal as CHL
-CHL.@check()
-Aqua.test_all(DirectionalStatistics; ambiguities=false)
+    import CompatHelperLocal as CHL
+    CHL.@check()
+end
