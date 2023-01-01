@@ -187,7 +187,6 @@ true
 ```
 """
 mad(x) = StatsBase.median(abs.(center_angle.(x .- median(x))))
-
 mad(x, rng::Interval) = mad(shift_range.(x, rng => -π..π)) * width(rng) / 2π
 
 
