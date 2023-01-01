@@ -2,7 +2,7 @@ module Circular
 
 using IntervalSets
 import StatsBase
-using Accessors: set
+using Accessors: set, modify
 
 
 """ Center angular value `x` to be within a symmetric range of length `range` around `at`, from `at - range/2` to `at + range/2`. Assumes circular structure: `x + range` is equivalent to `x`.
@@ -194,7 +194,9 @@ function wrap_curve_closed(f, data; rng)
 	obj1 = set(obj, f, maximum(rng) - 1e3*eps(fval))
 	obj2 = set(obj, f, maximum(rng) + 1e3*eps(fval))
 	map(@views [obj2; data[ix+1:end]; data[begin:ix]; obj1]) do x
-		set(x, f, to_range(f(x), rng))
+		modify(x, f) do fx
+			to_range(fx, rng)
+		end
 	end
 end
 
