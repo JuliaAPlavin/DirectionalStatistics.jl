@@ -191,8 +191,8 @@ function wrap_curve_closed(f, data; rng)
     ix = only(wrap_ix)
     obj = data[ix]
     fval = f(obj)
-    obj1 = set(obj, f, maximum(rng) - 1e3*eps(fval))
-    obj2 = set(obj, f, maximum(rng) + 1e3*eps(fval))
+    obj1 = set(obj, f, maximum(rng) - √eps(fval))
+    obj2 = set(obj, f, maximum(rng) + √eps(fval))
     map(@views [obj2; data[ix+1:end]; data[begin:ix]; obj1]) do x
         modify(x, f) do fx
             to_range(fx, rng)
