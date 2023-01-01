@@ -191,13 +191,19 @@ mad(x) = StatsBase.median(abs.(center_angle.(x .- median(x))))
 mad(x, rng::Interval) = mad(shift_range.(x, rng => -π..π)) * width(rng) / 2π
 
 
-""" Assuming `data` represents a closed curve with circular structure in `f.(data)`, wrap `data` so that it goes from `minimum(rng) + eps` to `maximum(rng) - eps`. A common usecase is plotting.
+"""    wrap_curve_closed([f=identity], data; rng)
+
+Assuming `data` represents a closed curve with circular structure in `f.(data)`, wrap `data` so that it goes from `minimum(rng) + eps` to `maximum(rng) - eps`.
+A common usecase is plotting such curves.
 
 ```julia
 julia> wrap_curve_closed(identity, [-20., 0, 100, 200]; rng=-180..180)
 [-180, -160, -20, 0, 100, 180]  # approximately: endpoints are slightly moved inwards
 ```
 """
+function wrap_curve_closed end
+
+wrap_curve_closed(data; rng) = wrap_curve_closed(identity, data; rng)
 function wrap_curve_closed(f, data; rng)
     # try putting all values into range
     data = @modify(fx -> to_range(fx, rng), data |> Elements() |> f)

@@ -6,6 +6,7 @@ using DirectionalStatistics
 using StaticArrays
 using Random
 using InverseFunctions
+using Accessors
 
 
 @test isnan(mod2pi(NaN))
@@ -209,14 +210,16 @@ Base.isapprox(a::Interval, b::Interval; kwds...) = isapprox(collect(endpoints(a)
 end
 
 @testset "wrap_curve" begin
-    @test Circular.wrap_curve_closed(identity, [-20., 0, 100, 200]; rng=-180..180) ≈ [-180, -160, -20, 0, 100, 180]
-    @test Circular.wrap_curve_closed(identity, [-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
-    @test Circular.wrap_curve_closed(identity, 360*10 .+ [-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
-    @test Circular.wrap_curve_closed(identity, [100., 150, 200, 340, 370]; rng=-180..180) ≈ [-180, -160, -20, 10, 100, 150, 180]
-    @test Circular.wrap_curve_closed(identity, [-20., 0, 100]; rng=-180..180) ≈ [-20, 0, 100]
-    @test Circular.wrap_curve_closed(identity, [10., 100, 150, -160, -20]; rng=-180..180) ≈ [-180, -160, -20, 10, 100, 150, 180]
-    @test Circular.wrap_curve_closed(identity, [100., 150, 200, 300, 350, 20, 50]; rng=-180..180) ≈ [-180, -160, -60, -10, 20, 50, 100, 150, 180]
-    @test Circular.wrap_curve_closed(identity, [120., 150, 170, -170, -120, -160, 175]; rng=-180..180) ≈ [-180, -170, -120, -160, -180, NaN, 180, 175, 120, 150, 170, 180]  nans=true
+    @test Circular.wrap_curve_closed([-20., 0, 100, 200]; rng=-180..180) ≈ [-180, -160, -20, 0, 100, 180]
+    @test Circular.wrap_curve_closed([-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
+    @test Circular.wrap_curve_closed(360*10 .+ [-200, -60., 0, 100]; rng=-180..180) ≈ [-180, -60, 0, 100, 160, 180]
+    @test Circular.wrap_curve_closed([100., 150, 200, 340, 370]; rng=-180..180) ≈ [-180, -160, -20, 10, 100, 150, 180]
+    @test Circular.wrap_curve_closed([-20., 0, 100]; rng=-180..180) ≈ [-20, 0, 100]
+    @test Circular.wrap_curve_closed([10., 100, 150, -160, -20]; rng=-180..180) ≈ [-180, -160, -20, 10, 100, 150, 180]
+    @test Circular.wrap_curve_closed([100., 150, 200, 300, 350, 20, 50]; rng=-180..180) ≈ [-180, -160, -60, -10, 20, 50, 100, 150, 180]
+    @test Circular.wrap_curve_closed([120., 150, 170, -170, -120, -160, 175]; rng=-180..180) ≈ [-180, -170, -120, -160, -180, NaN, 180, 175, 120, 150, 170, 180]  nans=true
+   
+    @test @optic(_.a).(Circular.wrap_curve_closed(@optic(_.a), [(a=-20.,), (a=0.,), (a=100.,), (a=200.,)]; rng=-180..180)) ≈ [-180, -160, -20, 0, 100, 180]
 end
 
 @testset "errors" begin
