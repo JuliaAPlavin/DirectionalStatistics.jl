@@ -104,11 +104,15 @@ end
     vals = 1e-5 .* rand(5)
     @test CircularStats.mean(vals) ≈ mean(vals)
     @test CircularStats.mean(1.2345 .+ vals) ≈ 1.2345 + mean(vals)
+
+    @test Circular.mean([0:0.2:π;0.4π:0.05:0.6π;π:0.4:2π]) ≈ 1.568889360630885
     
     # from scipy
     @test Circular.mean([355, 5, 2, 359, 10, 350], 0..360) ≈ 0.167690146
     @test Circular.mean([20, 21, 22, 18, 19, 20.5, 19.2], 0..360) ≈ mean([20, 21, 22, 18, 19, 20.5, 19.2])  rtol=1e-5
     @test Circular.mean([20, 21, 22, 18, 19, 20.5, NaN], 0..360) |> isnan
+
+    @test Circular.mean([43, 45, 52, 61, 75, 88, 88, 279, 357], 0..360) ≈ 51 atol=0.1  # Example 1.1 of Mardia & Jupp (2000)
     
     @testset for (f, fc) in [(mean, Circular.mean), (std, Circular.std), (var, Circular.var)]
         x = [repeat([0.12675364631578953], 10); repeat([0.12675365920187928], 100)]
@@ -125,6 +129,8 @@ end
     @test CircularStats.median([0, 1, 1, 2, 2, 3]) ∈ [1, 2]
     x = [1, 1.2, 2, 2.2, 1+π, 1.2+π, 2+π, 2.2+π]
     @test CircularStats.median(x) ∈ x
+    @test Circular.median([0:0.2:π;0.4π:0.05:0.6π;π:0.4:2π]) ≈ 1.556637061435917
+    @test CircularStats.median([43, 45, 52, 61, 75, 88, 88, 279, 357], 0..360) ≈ 52  # Example 1.1 of Mardia & Jupp (2000)
 end
 
 @testset "angular spread" begin
@@ -150,6 +156,8 @@ end
     @test 0.7*var(vals)/2 < CircularStats.var(1.2345 .+ vals) < var(vals)/2
     @test CircularStats.std(2.5 .* vals) ≈ 2.5 * CircularStats.std(vals)  rtol=1e-3
     @test CircularStats.var(2.5 .* vals) ≈ 2.5^2 * CircularStats.var(vals)  rtol=1e-3
+    @test Circular.std([0:0.2:π;0.4π:0.05:0.6π;π:0.4:2π]) ≈ 1.209651009981690
+    @test Circular.var([0:0.2:π;0.4π:0.05:0.6π;π:0.4:2π]) ≈ 0.518874815053895
     
     # from scipy
     @test Circular.std([355, 5, 2, 359, 10, 350], 0..360) ≈  6.520702116
@@ -158,6 +166,8 @@ end
     @test_broken Circular.var([20, 21, 22, 18, 19, 20.5, 19.2], 0..360) ≈ var([20, 21, 22, 18, 19, 20.5, 19.2])  rtol=1e-4
     @test Circular.std([20, 21, 22, 18, 19, 20.5, NaN], 0..360) |> isnan
     @test Circular.var([20, 21, 22, 18, 19, 20.5, NaN]) |> isnan
+
+    @test Circular.var([43, 45, 52, 61, 75, 88, 88, 279, 357] .|> deg2rad) ≈ 1 - 0.711 atol=0.001  # Example 1.1 of Mardia & Jupp (2000)
 end
 
 @testset "wrap_curve" begin
