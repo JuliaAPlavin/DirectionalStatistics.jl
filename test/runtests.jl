@@ -70,40 +70,40 @@ end
 
 @testset "angle range shift" begin
     for x in [0.01, 1, pi - 0.01, -2]
-        @test CircularStats.center_angle(x) ≈ x
-        @test CircularStats.center_angle(x + 2pi) ≈ x
-        @test CircularStats.center_angle(x - 2pi) ≈ x
-        @test CircularStats.to_range(x, -pi..pi) ≈ x
-        @test CircularStats.to_range(x + 2pi, -pi..pi) ≈ x
-        @test CircularStats.to_range(x - 2pi, -pi..pi) ≈ x
+        @test Circular.center_angle(x) ≈ x
+        @test Circular.center_angle(x + 2pi) ≈ x
+        @test Circular.center_angle(x - 2pi) ≈ x
+        @test Circular.to_range(x, -pi..pi) ≈ x
+        @test Circular.to_range(x + 2pi, -pi..pi) ≈ x
+        @test Circular.to_range(x - 2pi, -pi..pi) ≈ x
     end
 
-    @test CircularStats.distance(0.5, 1.3) ≈ 0.8
-    @test CircularStats.distance(0.5, 4π + 1.3) ≈ 0.8
-    @test CircularStats.distance(0.5, 4π + 1.3, range=2π) ≈ 0.8
-    @test CircularStats.distance(0.5, 0.25, range=0.1) ≈ 0.05
+    @test Circular.distance(0.5, 1.3) ≈ 0.8
+    @test Circular.distance(0.5, 4π + 1.3) ≈ 0.8
+    @test Circular.distance(0.5, 4π + 1.3, range=2π) ≈ 0.8
+    @test Circular.distance(0.5, 0.25, range=0.1) ≈ 0.05
 end
 
 @testset "angular mean" begin
-    @test CircularStats.mean(zeros(10)) ≈ 0
-    @test CircularStats.mean(ones(10)) ≈ 1
-    @test CircularStats.mean(.-ones(10)) ≈ -1
-    @test CircularStats.mean(fill(5, 10)) ≈ 5 - 2pi
+    @test Circular.mean(zeros(10)) ≈ 0
+    @test Circular.mean(ones(10)) ≈ 1
+    @test Circular.mean(.-ones(10)) ≈ -1
+    @test Circular.mean(fill(5, 10)) ≈ 5 - 2pi
     
-    @test CircularStats.mean(zeros(10), 0..0.3) ≈ 0
-    @test CircularStats.mean(ones(10), 0..0.3) ≈ 0.1
-    @test CircularStats.mean(.-ones(10), 0..0.3) ≈ -1 + 0.3*4
-    @test CircularStats.mean(fill(5, 10), 0..0.3) ≈ 5 % 0.3
+    @test Circular.mean(zeros(10), 0..0.3) ≈ 0
+    @test Circular.mean(ones(10), 0..0.3) ≈ 0.1
+    @test Circular.mean(.-ones(10), 0..0.3) ≈ -1 + 0.3*4
+    @test Circular.mean(fill(5, 10), 0..0.3) ≈ 5 % 0.3
     
     vals = [1.80044838, 2.02938314, 1.03534016, 4.84225057, 1.54256458, 5.19290675, 2.18474784, 4.77054777, 1.51736933, 0.72727580]
     avg = 1.35173983
-    @test CircularStats.mean(vals) ≈ avg
-    @test CircularStats.mean(vals ./ 2pi, 0..1) ≈ avg / 2pi
-    @test CircularStats.mean(vals ./ 2pi * 1.5, -1.5..0) ≈ -1.5 + avg / 2pi * 1.5
+    @test Circular.mean(vals) ≈ avg
+    @test Circular.mean(vals ./ 2pi, 0..1) ≈ avg / 2pi
+    @test Circular.mean(vals ./ 2pi * 1.5, -1.5..0) ≈ -1.5 + avg / 2pi * 1.5
 
     vals = 1e-5 .* rand(5)
-    @test CircularStats.mean(vals) ≈ mean(vals)
-    @test CircularStats.mean(1.2345 .+ vals) ≈ 1.2345 + mean(vals)
+    @test Circular.mean(vals) ≈ mean(vals)
+    @test Circular.mean(1.2345 .+ vals) ≈ 1.2345 + mean(vals)
 
     @test Circular.mean([0:0.2:π;0.4π:0.05:0.6π;π:0.4:2π]) ≈ 1.568889360630885
     
@@ -121,41 +121,41 @@ end
 end
 
 @testset "angular median" begin
-    @test CircularStats.median([0]) == 0
-    @test CircularStats.median([0, 0, 0]) == 0
-    @test CircularStats.median([-9π/16, -9π/16, 0, 9π/16, 9π/16]) == 0
-    @test CircularStats.median([-3π/8, 0, 2π/3]) == 0
-    @test CircularStats.median([ 1.39079274, 0.17122657, -0.61367729, -2.56454636, 2.70582513]) == 1.39079274
-    @test CircularStats.median([0, 1, 1, 2, 2, 3]) ∈ [1, 2]
+    @test Circular.median([0]) == 0
+    @test Circular.median([0, 0, 0]) == 0
+    @test Circular.median([-9π/16, -9π/16, 0, 9π/16, 9π/16]) == 0
+    @test Circular.median([-3π/8, 0, 2π/3]) == 0
+    @test Circular.median([ 1.39079274, 0.17122657, -0.61367729, -2.56454636, 2.70582513]) == 1.39079274
+    @test Circular.median([0, 1, 1, 2, 2, 3]) ∈ [1, 2]
     x = [1, 1.2, 2, 2.2, 1+π, 1.2+π, 2+π, 2.2+π]
-    @test CircularStats.median(x) ∈ x
+    @test Circular.median(x) ∈ x
     @test Circular.median([0:0.2:π;0.4π:0.05:0.6π;π:0.4:2π]) ≈ 1.556637061435917
-    @test CircularStats.median([43, 45, 52, 61, 75, 88, 88, 279, 357], 0..360) ≈ 52  # Example 1.1 of Mardia & Jupp (2000)
+    @test Circular.median([43, 45, 52, 61, 75, 88, 88, 279, 357], 0..360) ≈ 52  # Example 1.1 of Mardia & Jupp (2000)
 end
 
 @testset "angular spread" begin
-    @test CircularStats.std(zeros(10)) ≈ 0
-    @test CircularStats.std(fill(123, 10)) ≈ 0
-    @test CircularStats.var(zeros(10)) ≈ 0
-    @test CircularStats.var(fill(123, 10)) ≈ 0
-    @test CircularStats.resultant_mean_length(zeros(10)) ≈ 1
-    @test CircularStats.resultant_mean_length(fill(123, 10)) ≈ 1
+    @test Circular.std(zeros(10)) ≈ 0
+    @test Circular.std(fill(123, 10)) ≈ 0
+    @test Circular.var(zeros(10)) ≈ 0
+    @test Circular.var(fill(123, 10)) ≈ 0
+    @test Circular.resultant_mean_length(zeros(10)) ≈ 1
+    @test Circular.resultant_mean_length(fill(123, 10)) ≈ 1
     
     vals = [1.80044838, 2.02938314, 1.03534016, 4.84225057, 1.54256458, 5.19290675, 2.18474784, 4.77054777, 1.51736933, 0.72727580]
     vals_std = 1.46571716843
     vals_var = 0.65841659857
-    @test CircularStats.std(vals) ≈ vals_std
-    @test CircularStats.std(vals ./ 2pi, 0..1) ≈ vals_std / 2pi
-    @test CircularStats.std(vals ./ 2pi * 1.5, -1.5..0) ≈ vals_std / 2pi * 1.5
-    @test CircularStats.var(vals) ≈ vals_var
+    @test Circular.std(vals) ≈ vals_std
+    @test Circular.std(vals ./ 2pi, 0..1) ≈ vals_std / 2pi
+    @test Circular.std(vals ./ 2pi * 1.5, -1.5..0) ≈ vals_std / 2pi * 1.5
+    @test Circular.var(vals) ≈ vals_var
 
     vals = 1e-3 .* rand(5)
-    @test 0.7*std(vals) < CircularStats.std(vals) < std(vals)
-    @test 0.7*std(vals) < CircularStats.std(1.2345 .+ vals) < std(vals)
-    @test 0.7*var(vals)/2 < CircularStats.var(vals) < var(vals)/2
-    @test 0.7*var(vals)/2 < CircularStats.var(1.2345 .+ vals) < var(vals)/2
-    @test CircularStats.std(2.5 .* vals) ≈ 2.5 * CircularStats.std(vals)  rtol=1e-3
-    @test CircularStats.var(2.5 .* vals) ≈ 2.5^2 * CircularStats.var(vals)  rtol=1e-3
+    @test 0.7*std(vals) < Circular.std(vals) < std(vals)
+    @test 0.7*std(vals) < Circular.std(1.2345 .+ vals) < std(vals)
+    @test 0.7*var(vals)/2 < Circular.var(vals) < var(vals)/2
+    @test 0.7*var(vals)/2 < Circular.var(1.2345 .+ vals) < var(vals)/2
+    @test Circular.std(2.5 .* vals) ≈ 2.5 * Circular.std(vals)  rtol=1e-3
+    @test Circular.var(2.5 .* vals) ≈ 2.5^2 * Circular.var(vals)  rtol=1e-3
     @test Circular.std([0:0.2:π;0.4π:0.05:0.6π;π:0.4:2π]) ≈ 1.209651009981690
     @test Circular.var([0:0.2:π;0.4π:0.05:0.6π;π:0.4:2π]) ≈ 0.518874815053895
     
@@ -184,10 +184,10 @@ end
     # MethodError on julia 1.8+, ArgumentError on earlier versions
     # https://github.com/JuliaLang/julia/pull/41885
     exc_type = Union{ArgumentError, MethodError}
-    @test_throws exc_type CircularStats.mean([])
-    @test_throws exc_type CircularStats.std([])
-    @test_throws exc_type CircularStats.var([])
-    @test_throws exc_type CircularStats.median([])
+    @test_throws exc_type Circular.mean([])
+    @test_throws exc_type Circular.std([])
+    @test_throws exc_type Circular.var([])
+    @test_throws exc_type Circular.median([])
 end
 
 

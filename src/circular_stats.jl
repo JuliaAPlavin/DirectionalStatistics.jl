@@ -53,7 +53,7 @@ julia> Circular.distance(0, 5.5, range=3)
 """
 distance(x, y; range=2π) = abs(center_angle(x - y; range=range))
 
-shift_range(x, (from, to)) = (x - from.left) / width(from) * width(to) + to.left
+shift_range(x, (from, to)::Pair) = (x - from.left) / width(from) * width(to) + to.left
 
 
 resultant_vector(x) = sum(cis, x)
@@ -117,7 +117,7 @@ julia> Circular.median([0, 1, 2], -2..4)
 1.0
 ```
 """
-median(x) = minimum(a -> (sum(b -> distance(a, b), x), a), x)[2]
+median(x) = argmin(a -> sum(b -> distance(a, b), x), x)
 median(x, rng::Interval) = shift_range(median(Iterators.map(x -> shift_range(x, rng => -π..π), x)), -π..π => rng)
 
 """ Sample range - the shortest arc distance encompassing all of the data in the collection.
