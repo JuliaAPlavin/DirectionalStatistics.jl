@@ -5,6 +5,8 @@ using IntervalSets
 using DirectionalStatistics
 using StaticArrays
 using Random
+using InverseFunctions
+
 
 @testset "most distant points" begin
     x = [2, 39, 17, 7, -90, 45, 105, -30, 26, -4]
@@ -66,6 +68,14 @@ end
         vals = rand(5) .+ im .* rand(5)
         @test geometric_mad(vals .* exp(im * 10 * rand())) ≈ geometric_mad(vals)  rtol=0.3
     end
+end
+
+@testset "linear range shift" begin
+    f = Base.Fix2(shift_range, 1..2 => 20..30)
+    @test f(1) == 20
+    @test f(1.6) == 26
+    @test f(-2) == -10
+    InverseFunctions.test_inverse(f, 1.2)
 end
 
 @testset "angle range shift" begin

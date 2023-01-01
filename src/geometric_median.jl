@@ -7,7 +7,6 @@ module GeometricMedianAlgo
 struct Weiszfeld end  # Weiszfeld's algorithm: https://en.wikipedia.org/wiki/Geometric_median#Computation
 struct VardiZhang end  # https://stackoverflow.com/a/30305181, https://www.pnas.org/content/pnas/97/4/1423.full.pdf
 end
-export GeometricMedianAlgo
 
 
 wsum(A, W) = mapreduce(*, +, A, W)
@@ -82,7 +81,6 @@ true
 ```
 """
 geometric_median(A::AbstractVector; kwargs...) = geometric_median(GeometricMedianAlgo.VardiZhang(), A; kwargs...)
-export geometric_median
 
 """ Geometric Median absolute deviation (MAD) of a collection of points.
 
@@ -92,4 +90,3 @@ function geometric_mad(A::AbstractVector{<:Complex}; kwargs...)
     med = geometric_median(A; kwargs...)
     return median(norm.(A .- med))
 end
-export geometric_mad

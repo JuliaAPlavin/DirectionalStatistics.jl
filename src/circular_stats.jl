@@ -3,6 +3,8 @@ module Circular
 using IntervalSets
 import StatsBase
 using Accessors: set, modify
+using InverseFunctions
+import ..shift_range
 
 
 """ Center angular value `x` to be within a symmetric range of length `range` around `at`, from `at - range/2` to `at + range/2`. Assumes circular structure: `x + range` is equivalent to `x`.
@@ -53,8 +55,6 @@ julia> Circular.distance(0, 5.5, range=3)
 """
 distance(x, y; range=2π) = abs(center_angle(x - y; range=range))
 
-shift_range(x, (from, to)::Pair) = (x - from.left) / width(from) * width(to) + to.left
-
 
 resultant_vector(x) = sum(cis, x)
 resultant_mean_vector(x) = resultant_vector(x) / length(x)
@@ -75,7 +75,10 @@ true
 ```
 """
 mean(x) = angle(resultant_vector(x))
-mean(x, rng::Interval) = shift_range(mean(Iterators.map(x -> shift_range(x, rng => -π..π), x)), -π..π => rng)
+function mean(x, rng::Interval)
+    sr = Base.Fix2(shift_range, rng => -π..π)
+    inverse(sr)(mean(Iterators.map(sr, x)))
+end
 
 """ Variance of a collection of circular data. """
 var(x) = 1 - resultant_mean_length(x)
@@ -118,7 +121,10 @@ julia> Circular.median([0, 1, 2], -2..4)
 ```
 """
 median(x) = argmin(a -> sum(b -> distance(a, b), x), x)
-median(x, rng::Interval) = shift_range(median(Iterators.map(x -> shift_range(x, rng => -π..π), x)), -π..π => rng)
+function median(x, rng::Interval)
+    sr = Base.Fix2(shift_range, rng => -π..π)
+    inverse(sr)(median(Iterators.map(sr, x)))
+end
 
 """ Sample range - the shortest arc distance encompassing all of the data in the collection.
 

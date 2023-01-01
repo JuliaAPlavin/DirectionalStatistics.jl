@@ -1,14 +1,26 @@
 module DirectionalStatistics
 
+using InverseFunctions
+using IntervalSets
+
+
+export
+    CircularStats, Circular,
+    shift_range, vec_std, most_distant_points, most_distant_points_ix,
+    GeometricMedianAlgo, geometric_median, geometric_mad
+
+
+shift_range(x, (from, to)::Pair) = (x - from.left) / width(from) * width(to) + to.left
+InverseFunctions.inverse(f::Base.Fix2{typeof(shift_range)}) = Base.Fix2(shift_range, reverse(f.x))
+
+
+
 include("circular_stats.jl")
 include("geometric_median.jl")
-
-const CircularStats = Circular
-export CircularStats, Circular
+const CircularStats = Circular  # backward compatibility
 
 
 vec_std(A; center=mean(A))::eltype(eltype(A)) = sqrt(sum(norm.(A .- Ref(center)).^2) / (length(A) - 1))
-export vec_std
 
 
 # see also https://stackoverflow.com/questions/22152482/choose-n-most-distant-points-in-r
@@ -46,6 +58,5 @@ function most_distant_points_ix(points::Vector)
     end
     return Tuple(findmax(dists)[2])
 end
-export most_distant_points, most_distant_points_ix
 
 end
