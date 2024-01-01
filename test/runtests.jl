@@ -362,6 +362,20 @@ end
     @test_throws "reducing over an empty collection" Circular.median([])
 end
 
+@testitem "Distributions" begin
+    using Distributions
+    Distributions.Random.seed!(123)
+
+    d = VonMises(0.5, 2)
+    ds = rand(d, 10^4)
+    @test Circular.mean(d) ≈ 0.5
+    @test Circular.mean(ds) ≈ 0.5 atol=1e-2
+    @test Circular.var(d) ≈ 0.3022253 atol=1e-6
+    @test Circular.var(ds) ≈ 0.3022253 atol=1e-2
+    @test Circular.std(d) ≈ 0.8483620 atol=1e-6
+    @test Circular.std(ds) ≈ 0.8483620 atol=1e-2
+end
+
 @testitem "_" begin
     import Aqua
     Aqua.test_all(DirectionalStatistics; ambiguities=false)
