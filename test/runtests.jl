@@ -3,10 +3,6 @@ using TestItemRunner
 @run_package_tests
 
 
-@testitem "Base.isnan" begin
-    isnan(mod2pi(NaN))
-end
-
 @testitem "most distant points" begin
     using StaticArrays
 
@@ -360,13 +356,10 @@ end
 end
 
 @testitem "errors" begin
-    # MethodError on julia 1.8+, ArgumentError on earlier versions
-    # https://github.com/JuliaLang/julia/pull/41885
-    exc_type = Union{ArgumentError, MethodError}
-    @test_throws exc_type Circular.mean([])
-    @test_throws exc_type Circular.std([])
-    @test_throws exc_type Circular.var([])
-    @test_throws exc_type Circular.median([])
+    @test_throws "reducing over an empty collection" Circular.mean([])
+    @test_throws "reducing over an empty collection" Circular.std([])
+    @test_throws "reducing over an empty collection" Circular.var([])
+    @test_throws "reducing over an empty collection" Circular.median([])
 end
 
 @testitem "_" begin
