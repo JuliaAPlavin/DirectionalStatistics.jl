@@ -84,6 +84,7 @@ end
 @testitem "linear range shift" begin
     using IntervalSets
     using InverseFunctions
+    using DirectionalStatistics: shift_range
 
     f = Base.Fix2(shift_range, 1..2 => 20..30)
     @test f(1) == 20

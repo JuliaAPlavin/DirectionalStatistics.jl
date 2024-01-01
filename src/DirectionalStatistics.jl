@@ -6,7 +6,7 @@ using IntervalSets
 
 export
     CircularStats, Circular,
-    shift_range, vec_std, most_distant_points, most_distant_points_ix,
+    vec_std, most_distant_points, most_distant_points_ix,
     GeometricMedianAlgo, geometric_median, geometric_mad
 
 
